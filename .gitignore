@@ -1,6 +1,7 @@
 # Build files
 _build/
 main
+print
 
 # Temp files
 *.swp
