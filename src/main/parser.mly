@@ -15,7 +15,9 @@
 
 %token              LET IN NEW
 
-%token              LPAREN RPAREN SEMICOLON
+%token              RETURN
+
+%token              LPAREN RPAREN SEMICOLON LBRACE RBRACE
 
 %token              EOF
 
@@ -34,7 +36,13 @@ program:
   | f = fundef*; EOF    { f };;
 
 fundef:
-  | s = FUNCTION; args = ARGUEMENT*; e = exp    { Function (s, args, e) };;
+  | s = FUNCTION; args = param; e = body    { Function (s, args, e) };;
+
+param:
+  | LPAREN; s = ARGUEMENT*; RPAREN   { s };;
+
+body:
+  | LBRACE; e = exp; RBRACE { e };;
 
 basicexp:
   | i = INT                     { Const i }

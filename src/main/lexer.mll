@@ -29,12 +29,15 @@ rule read = parse
   | '('     { LPAREN }
   | ')'     { RPAREN }
   | ';'     { SEMICOLON }
+  | '{'     { LBRACE }
+  | '}'     { RBRACE }
 
   | "while"         { WHILE }
   | "if"            { IF }
   | "printint"      { PRINTINT }
   | "let"           { LET }
   | "new"           { NEW }
+  | "return"        { RETURN }
 
   | eof     { EOF }
   | _       { raise (SyntaxError ("Unexpected char: " ^ Lexing.lexeme lexbuf)) }
