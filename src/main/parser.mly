@@ -36,18 +36,20 @@ program:
   | f = fundef*; EOF    { f };;
 
 fundef:
-  | s = FUNCTION; args = param; e = body    { Function (s, args, e) };;
+  | s = FUNCTION; a = args; b = body    { Function (s, a, b) };;
 
-param:
-  | LPAREN; s = ARGUEMENT*; RPAREN   { s };;
+args:
+  | LPAREN; ss = ARGUEMENT*; RPAREN   { ss };;
 
 body:
-  | LBRACE; e = exp*; RBRACE { Ast.make_seq e };;
+  | LBRACE; es = exp*; RBRACE { Ast.make_seq es };;
+
+params:
+  | LPAREN; es = exp+; RPAREN    { Ast.make_seq es };;
 
 basicexp:
   | i = INT                     { Const i }
   | s = IDENTIFIER              { Identifier s }
-  | LPAREN; e = exp+; RPAREN     { Ast.make_seq e };;
 
 exp:
   | es  = basicexp+                 { List.fold_left (fun x y -> Application (x, y)) (List.hd es) (List.tl es) }
@@ -63,9 +65,9 @@ exp:
   | e   = exp; OR;        f = exp   { Operator (Or, e, f) }
   | e   = exp; NOT;       f = exp   { Operator (Not, e, f) }
 
-  | e = exp;    SEMICOLON       f = exp                             { Seq (e, f) }
-  | WHILE;      e = exp;        DO;     f = exp                     { While (e, f) }
-  | IF;         e = exp;        DO;     f = exp; ELSE;  g = exp     { If (e, f, g) }
-  | PRINTINT;   e = exp                                             { Printint e }
-  | LET;        s = IDENTIFIER; EQUAL;  e = exp; IN;    f = exp     { Let (s, e, f) }
-  | NEW;        s = IDENTIFIER; EQUAL;  e = exp; IN;    f = exp     { New (s, e, f) }
+  | e = exp;    SEMICOLON       f = exp                                 { Seq (e, f) }
+  | WHILE;      e = params;     DO;     f = body                        { While (e, f) }
+  | IF;         e = params;     DO;     f = body;   ELSE;   g = body    { If (e, f, g) }
+  | PRINTINT;   e = exp                                                 { Printint e }
+  | LET;        s = IDENTIFIER; EQUAL;  e = exp;    IN;     f = exp     { Let (s, e, f) }
+  | NEW;        s = IDENTIFIER; EQUAL;  e = exp;    IN;     f = exp     { New (s, e, f) }
