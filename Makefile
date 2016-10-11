@@ -5,7 +5,7 @@ main: main.native
 test: test.native
 
 %.native:
-	ocamlbuild -use-ocamlfind $@
+	ocamlbuild -use-menhir -use-ocamlfind $@
 	mv $@ $*
 
 .PHONY: test default
