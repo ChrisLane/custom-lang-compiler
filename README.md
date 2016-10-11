@@ -2,5 +2,6 @@
 Implemented Lexer and Parser
 
 ## Requirements
-* Menhir
 * Make
+* Menhir ($ opam install menhir)
+* Core ($ opam install core)

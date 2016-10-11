@@ -1,11 +1,11 @@
 default: main
 
-main: main.native
+main: print.native
 
 test: test.native
 
 %.native:
-	ocamlbuild -use-menhir -use-ocamlfind $@
+	ocamlbuild -use-ocamlfind -pkgs core -tag thread $@
 	mv $@ $*
 
 .PHONY: test default
