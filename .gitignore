@@ -1,3 +1,6 @@
 # Build files
 _build/
 main
+
+# Exclude
+!main/
