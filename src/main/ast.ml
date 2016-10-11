@@ -4,6 +4,7 @@ type opcode =
   | And | Or | Not
 
 type expression =
+  | Empty
   | Seq of              expression * expression                 (* e; e *)
   | While of            expression * expression                 (* while e do e *)
   | If of               expression * expression * expression    (* if e do e else e *)
@@ -21,3 +22,7 @@ type expression =
 type fundef = Function of  string * string list * expression
 
 type program = fundef list
+
+let rec make_seq = function
+  | [] -> Empty
+  | x :: xs -> Seq (x, make_seq xs)

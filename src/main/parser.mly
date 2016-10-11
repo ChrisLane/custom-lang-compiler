@@ -42,12 +42,12 @@ param:
   | LPAREN; s = ARGUEMENT*; RPAREN   { s };;
 
 body:
-  | LBRACE; e = exp; RBRACE { e };;
+  | LBRACE; e = exp*; RBRACE { Ast.make_seq e };;
 
 basicexp:
   | i = INT                     { Const i }
   | s = IDENTIFIER              { Identifier s }
-  | LPAREN; e = exp; RPAREN     { e };;
+  | LPAREN; e = exp+; RPAREN     { Ast.make_seq e };;
 
 exp:
   | es  = basicexp+                 { List.fold_left (fun x y -> Application (x, y)) (List.hd es) (List.tl es) }
