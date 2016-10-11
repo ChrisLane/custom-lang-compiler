@@ -4,7 +4,7 @@ exception SyntaxError of string
 }
 
 let int = ['0'-'9'] ['0'-'9']*
-let var = ['a'-'z' 'A'-'Z'] ['a'-'z' 'A'-'Z']*
+let name = ['a'-'z' 'A'-'Z'] ['a'-'z' 'A'-'Z']*
 let white = [' ' '\t']+
 let newline = '\r' | '\n' | "\r\n"
 
@@ -39,5 +39,6 @@ rule read = parse
   | "new"           { NEW }
   | "return"        { RETURN }
 
+  | name    { NAME (Lexing.lexeme lexbuf) }
   | eof     { EOF }
   | _       { raise (SyntaxError ("Unexpected char: " ^ Lexing.lexeme lexbuf)) }

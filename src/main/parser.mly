@@ -1,9 +1,7 @@
 %{ open Ast %}
 
 %token  <int>       INT
-%token  <string>    IDENTIFIER
-%token  <string>    FUNCTION
-%token  <string>    ARGUEMENT
+%token  <string>    NAME
 
 %token              PLUS MINUS TIMES DIVIDE
 %token              LEQ GEQ EQUAL NOTEQ
@@ -36,10 +34,10 @@ program:
   | f = fundef*; EOF    { f };;
 
 fundef:
-  | s = FUNCTION; a = args; b = body    { Function (s, a, b) };;
+  | s = NAME; a = args; b = body    { Function (s, a, b) };;
 
 args:
-  | LPAREN; ss = ARGUEMENT*; RPAREN   { ss };;
+  | LPAREN; ss = NAME*; RPAREN   { ss };;
 
 body:
   | LBRACE; es = exp*; RBRACE { Ast.make_seq es };;
@@ -49,7 +47,7 @@ params:
 
 basicexp:
   | i = INT                     { Const i }
-  | s = IDENTIFIER              { Identifier s }
+  | s = NAME                    { Identifier s }
 
 exp:
   | es  = basicexp+                 { List.fold_left (fun x y -> Application (x, y)) (List.hd es) (List.tl es) }
@@ -65,9 +63,10 @@ exp:
   | e   = exp; OR;        f = exp   { Operator (Or, e, f) }
   | e   = exp; NOT;       f = exp   { Operator (Not, e, f) }
 
-  | e = exp;    SEMICOLON       f = exp                                 { Seq (e, f) }
-  | WHILE;      e = params;     DO;     f = body                        { While (e, f) }
-  | IF;         e = params;     DO;     f = body;   ELSE;   g = body    { If (e, f, g) }
-  | PRINTINT;   e = exp                                                 { Printint e }
-  | LET;        s = IDENTIFIER; EQUAL;  e = exp;    IN;     f = exp     { Let (s, e, f) }
-  | NEW;        s = IDENTIFIER; EQUAL;  e = exp;    IN;     f = exp     { New (s, e, f) }
+  | e = exp;    SEMICOLON   f = exp                                 { Seq (e, f) }
+  | WHILE;      e = params; DO;     f = body                        { While (e, f) }
+  | IF;         e = params; DO;     f = body;   ELSE;   g = body    { If (e, f, g) }
+  | PRINTINT;   e = exp                                             { Printint e }
+  | LET;        s = NAME;   EQUAL;  e = exp;    IN;     f = exp     { Let (s, e, f) }
+  | NEW;        s = NAME;   EQUAL;  e = exp;    IN;     f = exp     { New (s, e, f) }
+  | RETURN;     x = basicexp;                                       { Deref x }
