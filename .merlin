@@ -1,5 +1,5 @@
-S src
+S src/**
 
 PKG core
 
-B _build/src
+B _build/**
