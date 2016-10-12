@@ -41,7 +41,6 @@ rule read = parse
   | '='             { ASG }
   | "printint"      { PRINTINT }
   | "let"           { LET }
-  | "new"           { NEW }
   | "return"        { RETURN }
 
   | name    { NAME (Lexing.lexeme lexbuf) }
