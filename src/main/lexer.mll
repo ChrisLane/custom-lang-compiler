@@ -20,20 +20,25 @@ rule read = parse
 
   | "<="    { LEQ }
   | ">="    { GEQ }
-  | '='     { EQUAL }
-  | "!="    { NOTEQ }
+  | "=="    { EQUALTO }
+  | "!="    { NOTEQTO }
   | "&&"    { AND }
   | "||"    { OR }
   | '!'     { NOT }
-
+  
   | '('     { LPAREN }
   | ')'     { RPAREN }
   | ';'     { SEMICOLON }
   | '{'     { LBRACE }
   | '}'     { RBRACE }
 
+  | "int"   { TYPE }
+
+  | ", "     { PARAMSEP }
+
   | "while"         { WHILE }
   | "if"            { IF }
+  | '='             { ASG }
   | "printint"      { PRINTINT }
   | "let"           { LET }
   | "new"           { NEW }

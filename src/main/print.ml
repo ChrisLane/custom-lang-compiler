@@ -1,4 +1,3 @@
-open Core.Std
 open Lexer
 open Lexing
 
@@ -12,10 +11,13 @@ let help () =
   print_endline ("Please use: './main <file>\n")
 
 let parse_file filename = 
-  In_channel.create filename
+  open_in filename
   |> Lexing.from_channel
   |> parse_with_error
-
+  |> List.map Ast.function_string
+  |> String.concat " "
+  |> print_string
+  |> print_newline
 
 let _ =
   if Array.length (Sys.argv) != 2
