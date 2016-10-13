@@ -38,17 +38,16 @@ program:
   | f = fundef*; EOF    { f };;
 
 fundef:
-  | n = NAME; p = funparams; b = funbody    { Function (n, p, b) };;
+  | n = NAME; p = funparams; b = funbody;   { Function (n, p, b) };;
 
 funparams:
-  | LPAREN; p = separated_list (PARAMSEP, NAME); RPAREN { p };;
+  | LPAREN; p = separated_list (PARAMSEP, NAME); RPAREN     { p };;
 
 funbody:
-  | LBRACE; RBRACE              { Empty }
-  | LBRACE; e = body; RBRACE    { e };;
+  | LBRACE; b = body; RBRACE    { b };;
 
 body:
-  | e = action                              { e }
+  |                                         { Empty  }
   | e = action;  SEMICOLON;   f = body      { Seq (e, f) };;
 
 action:
