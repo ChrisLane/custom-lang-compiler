@@ -1,6 +1,6 @@
 default: main
 
-main: print.native
+main: main.native
 
 test: test.native
 

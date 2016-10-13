@@ -58,5 +58,4 @@ let rec exp_string = function
   | New (s, e, f) -> "New ( \"" ^ s ^ "\" = " ^ exp_string e ^ " ) In { " ^ exp_string f ^ " } "
 
 let function_string = function
-  | Function (name, args, body) -> 
-    "Function " ^ name ^ " ( " ^ String.concat ", " args  ^ " ) { " ^ exp_string body ^ " }"
+  | Function (name, args, body) -> "Function " ^ name ^ " ( " ^ String.concat ", " args  ^ " ) { " ^ exp_string body ^ " }"

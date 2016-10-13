@@ -1,6 +1,8 @@
-let _ = 
-  read_line()
-  |> Lexing.from_string
-  |> Parser.program Lexer.read
-  |> ignore;
-  print_newline()
+
+let help () = print_endline ("Please use: './main <file>\n")
+
+let _ =
+  if Array.length (Sys.argv) != 2
+  then (help (); exit 1)
+  else Print.parse_file (Sys.argv.(1))
+
