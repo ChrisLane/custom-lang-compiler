@@ -55,8 +55,8 @@ let rec exp_string = function
   | Printint e -> "Printint ( " ^ exp_string e ^ " ) "
   | Identifier s -> "\"" ^ s ^ "\""
   | Let (s, e, f) -> "Let ( \"" ^ s ^ "\" = " ^ exp_string e ^ " ) In { " ^ exp_string f ^ " } "
-  | New (s, e, f) -> "New ( \"" ^ s ^ "\" = " ^ exp_string e ^ " ) In { " ^ exp_string f ^ " } ";;
+  | New (s, e, f) -> "New ( \"" ^ s ^ "\" = " ^ exp_string e ^ " ) In { " ^ exp_string f ^ " } "
 
 let function_string = function
   | Function (name, args, body) -> 
-    "Function " ^ name ^ " ( " ^ String.concat ", " args  ^ " ) { " ^ exp_string body ^ " }";;
+    "Function " ^ name ^ " ( " ^ String.concat ", " args  ^ " ) { " ^ exp_string body ^ " }"
