@@ -1,0 +1,8 @@
+main () {
+    if (x==0) do {
+        return x 
+    } else {
+        x = x+1;
+        return x
+    }
+}

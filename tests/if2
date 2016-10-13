@@ -1,0 +1,12 @@
+main (aguement1, aguement2) {
+    int x = 0;
+    x = 10;
+
+    if (x >= 10 && p == 0) do {
+        while (x >= 1) do {
+            x = x-1
+        }
+    } else {
+        x = 0
+    }
+}
