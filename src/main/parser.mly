@@ -41,24 +41,22 @@ body:
   | e = action                              { e }
   | e = action;  SEMICOLON;   f = body      { Seq (e, f) };;
 
+expaction:
+  | e = exp     { e }
+  | a = action  { a }
+
 action:
-  | TYPE;           i = NAME;       ASG;    c = const;      SEMICOLON;  e = body        { New (i, c, e) }
-  | LET;            s = NAME;       ASG;    e = exp;        IN;         f = body        { Let (s, e, f) }
-  | WHILE;          e = params;     DO;     f = bracedbody                              { While (e, f) }
-  | IF;             e = params;     DO;     f = bracedbody; ELSE;       g = bracedbody  { If (e, f, g) }
-  | RETURN;         x = identifier                                                      { Deref x }
-  | PRINTINT;       x = identifier                                                      { Printint x }
-  | x = identifier; ASG;            e = exp                                             { Asg (x, e) };;
-  | x = identifier; p = params                                                          { Application (x, p) }
+  | TYPE;       s = NAME;       ASG;    e = expaction;          SEMICOLON;  f = body    { New (s, e, f) }
+  | LET;        s = NAME;       ASG;    e = expaction;          IN;         f = body    { Let (s, e, f) }
+  | WHILE;      e = params;     DO;     f = bracedbody                                  { While (e, f) }
+  | IF;         e = params;     DO;     f = bracedbody; ELSE;   g = bracedbody          { If (e, f, g) }
+  | RETURN;     e = expaction                                                           { Deref e }
+  | PRINTINT;   e = expaction                                                           { Printint e }
+  | e = exp;    ASG             f = expaction                                           { Asg (e, f) }
+  | e = exp;    p = params                                                              { Application (e, p) }
 
 params:
-  | LPAREN; e = exp; RPAREN    { e };;
-
-const:
-  | i = INT     { Const i };;
-
-identifier:
-  | s = NAME    { Identifier s };;
+  | LPAREN; e = expaction; RPAREN    { e };;
 
 %inline operator:
   | PLUS    { Plus }
@@ -74,6 +72,7 @@ identifier:
   | NOT     { Not }
 
 exp:
-  | e = const                           { e }
-  | e = identifier                      { e }
+  | e = INT                             { Const e }
+  | e = NAME                            { Identifier e }
   | e = exp; o = operator;  f = exp     { Operator (o, e, f) };;
+  | LPAREN; e = expaction; RPAREN       {e}
