@@ -46,14 +46,14 @@ expaction:
   | a = action  { a }
 
 action:
-  | TYPE;       s = NAME;       ASG;    e = expaction;          SEMICOLON;  f = body    { New (s, e, f) }
-  | LET;        s = NAME;       ASG;    e = expaction;          IN;         f = body    { Let (s, e, f) }
-  | WHILE;      e = params;     DO;     f = bracedbody                                  { While (e, f) }
-  | IF;         e = params;     DO;     f = bracedbody; ELSE;   g = bracedbody          { If (e, f, g) }
-  | RETURN;     e = expaction                                                           { Deref e }
-  | PRINTINT;   e = expaction                                                           { Printint e }
-  | e = exp;    ASG             f = expaction                                           { Asg (e, f) }
-  | e = exp;    p = params                                                              { Application (e, p) }
+  | TYPE;       s = NAME;       ASG;    e = expaction;          SEMICOLON;      f = body    { New (s, e, f) }
+  | LET;        s = NAME;       ASG;    e = expaction;          IN;             f = body    { Let (s, e, f) }
+  | IF;         e = params;     DO;     f = bracedbody; ELSE;   g = bracedbody              { If (e, f, g) }
+  | WHILE;      e = params;     DO;     f = bracedbody                                      { While (e, f) }
+  | RETURN;     e = expaction                                                               { Deref e }
+  | PRINTINT;   e = expaction                                                               { Printint e }
+  | e = exp;    ASG             f = expaction                                               { Asg (e, f) }
+  | e = exp;    p = params                                                                  { Application (e, p) }
 
 params:
   | LPAREN; e = expaction; RPAREN    { e };;
