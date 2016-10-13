@@ -42,13 +42,14 @@ body:
   | e = action;  SEMICOLON;   f = body      { Seq (e, f) };;
 
 action:
-  | TYPE;       i = NAME;       ASG;    c = const;      SEMICOLON;  e = body        { New (i, c, e) }
-  | LET;        s = NAME;       ASG;    e = exp;        IN;         f = body        { Let (s, e, f) }
-  | WHILE;      e = params;     DO;     f = bracedbody                              { While (e, f) }
-  | IF;         e = params;     DO;     f = bracedbody; ELSE;       g = bracedbody  { If (e, f, g) }
-  | RETURN;     x = identifier                                                      { Deref x }
-  | PRINTINT;   e = identifier                                                      { Printint e }
-  | e = exp;    ASG;            f = exp                                             { Asg (e, f) };;
+  | TYPE;           i = NAME;       ASG;    c = const;      SEMICOLON;  e = body        { New (i, c, e) }
+  | LET;            s = NAME;       ASG;    e = exp;        IN;         f = body        { Let (s, e, f) }
+  | WHILE;          e = params;     DO;     f = bracedbody                              { While (e, f) }
+  | IF;             e = params;     DO;     f = bracedbody; ELSE;       g = bracedbody  { If (e, f, g) }
+  | RETURN;         x = identifier                                                      { Deref x }
+  | PRINTINT;       x = identifier                                                      { Printint x }
+  | x = identifier; ASG;            e = exp                                             { Asg (x, e) };;
+  | x = identifier; p = params                                                          { Application (x, p) }
 
 params:
   | LPAREN; e = exp; RPAREN    { e };;
