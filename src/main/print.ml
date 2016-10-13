@@ -4,7 +4,8 @@ open Lexing
 let parse_with_error lexbuf =
   try Parser.program Lexer.read lexbuf with
   | SyntaxError msg ->  print_endline msg; exit (-1)
-  | Parser.Error    ->  print_endline (Lexing.lexeme lexbuf); exit (-1)
+  | Parser.Error    ->  
+    print_endline ("Found: \'" ^ Lexing.lexeme lexbuf ^ "\' but expected something else."); exit (-1)
 
 
 let help () = 

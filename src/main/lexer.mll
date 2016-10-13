@@ -4,7 +4,7 @@ exception SyntaxError of string
 }
 
 let int = ['0'-'9'] ['0'-'9']*
-let name = ['a'-'z' 'A'-'Z'] ['a'-'z' 'A'-'Z']*
+let name = ['a'-'z' 'A'-'Z'] ['a'-'z' 'A'-'Z' '0'-'9']*
 let white = [' ' '\t']+
 let newline = '\r' | '\n' | "\r\n"
 
@@ -34,10 +34,12 @@ rule read = parse
 
   | "int"   { TYPE }
 
-  | ", "     { PARAMSEP }
+  | ","     { PARAMSEP }
 
   | "while"         { WHILE }
   | "if"            { IF }
+  | "do"            { DO }
+  | "else"          { ELSE }
   | '='             { ASG }
   | "printint"      { PRINTINT }
   | "let"           { LET }

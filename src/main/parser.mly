@@ -7,29 +7,19 @@
 %token              LEQ GEQ EQUALTO NOTEQTO
 %token              AND OR NOT
 
-%token              WHILE IF ASG DO ELSE
+%token              TYPE LET IN WHILE IF ASG DO ELSE PRINTINT RETURN
 
-%token              PRINTINT
-
-%token              LET IN
-
-%token              RETURN
-
-%token              LPAREN RPAREN SEMICOLON LBRACE RBRACE
-
-%token              TYPE
-
-%token              PARAMSEP
+%token              LPAREN RPAREN SEMICOLON LBRACE RBRACE PARAMSEP
 
 %token              EOF
 
-%right              NOT
+%left               OR
+%left               AND
+%right              EQUALTO NOTEQTO
+%left               LEQ GEQ
 %left               PLUS MINUS
 %left               TIMES DIVIDE
-%left               LEQ GEQ
-%right              EQUALTO NOTEQTO
-%left               AND
-%left               OR
+%right              NOT
 
 %start  <Ast.program>   program
 %%
@@ -38,29 +28,30 @@ program:
   | f = fundef*; EOF    { f };;
 
 fundef:
-  | n = NAME; p = funparams; b = funbody;   { Function (n, p, b) };;
+  | n = NAME; p = funparams; b = bracedbody    { Function (n, p, b) };;
 
 funparams:
   | LPAREN; p = separated_list (PARAMSEP, NAME); RPAREN     { p };;
 
-funbody:
-  | LBRACE; b = body; RBRACE    { b };;
+bracedbody:
+  | LBRACE; RBRACE              { Empty }
+  | LBRACE; e = body; RBRACE    { e };;
 
 body:
-  |                                         { Empty  }
+  | e = action                              { e }
   | e = action;  SEMICOLON;   f = body      { Seq (e, f) };;
 
 action:
-  | TYPE;       i = NAME;       ASG;    c = const;  SEMICOLON;  e = body    { New (i, c, e) } (* NEW *)
-  | LET;        s = NAME;       ASG;    e = exp;    IN;         f = body    { Let (s, e, f) }
-  | WHILE;      e = params;     DO;     f = body                            { While (e, f) }
-  | IF;         e = params;     DO;     f = body;   ELSE;       g = body    { If (e, f, g) }
-  | RETURN;     x = identifier                                              { Deref x }
-  | PRINTINT;   e = identifier                                              { Printint e }
-  | e = exp;    ASG;            f = exp                                     { Asg (e, f) };;
+  | TYPE;       i = NAME;       ASG;    c = const;      SEMICOLON;  e = body        { New (i, c, e) }
+  | LET;        s = NAME;       ASG;    e = exp;        IN;         f = body        { Let (s, e, f) }
+  | WHILE;      e = params;     DO;     f = bracedbody                              { While (e, f) }
+  | IF;         e = params;     DO;     f = bracedbody; ELSE;       g = bracedbody  { If (e, f, g) }
+  | RETURN;     x = identifier                                                      { Deref x }
+  | PRINTINT;   e = identifier                                                      { Printint e }
+  | e = exp;    ASG;            f = exp                                             { Asg (e, f) };;
 
 params:
-  | LPAREN; es = exp+; RPAREN    { Ast.make_seq es };;
+  | LPAREN; e = exp; RPAREN    { e };;
 
 const:
   | i = INT     { Const i };;
