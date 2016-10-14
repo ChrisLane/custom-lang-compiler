@@ -38,22 +38,23 @@ bracedbody:
   | LBRACE; e = body; RBRACE    { e };;
 
 body:
-  | e = action                              { e }
-  | e = action;  SEMICOLON;   f = body      { Seq (e, f) };;
+  | e = action                                                                      { e }
+  | e = action; SEMICOLON;  f = body                                                { Seq (e, f) }
+  | TYPE;       s = NAME;   ASG;        e = expaction;  SEMICOLON;      f = body    { New (s, e, f) }
+  | LET;        s = NAME;   ASG;        e = expaction;  IN;             f = body    { Let (s, e, f) };;
 
 expaction:
   | e = exp     { e }
   | a = action  { a }
+  | p = params  { p };;
 
 action:
-  | TYPE;       s = NAME;       ASG;    e = expaction;          SEMICOLON;      f = body    { New (s, e, f) }
-  | LET;        s = NAME;       ASG;    e = expaction;          IN;             f = body    { Let (s, e, f) }
   | IF;         e = params;     DO;     f = bracedbody; ELSE;   g = bracedbody              { If (e, f, g) }
   | WHILE;      e = params;     DO;     f = bracedbody                                      { While (e, f) }
   | RETURN;     e = expaction                                                               { Deref e }
   | PRINTINT;   e = expaction                                                               { Printint e }
   | e = exp;    ASG             f = expaction                                               { Asg (e, f) }
-  | e = exp;    p = params                                                                  { Application (e, p) }
+  | e = exp;    p = params                                                                  { Application (e, p) };;
 
 params:
   | LPAREN; e = expaction; RPAREN    { e };;
@@ -69,10 +70,9 @@ params:
   | NOTEQTO { Noteq }
   | AND     { And }
   | OR      { Or }
-  | NOT     { Not }
+  | NOT     { Not };;
 
 exp:
   | e = INT                             { Const e }
   | e = NAME                            { Identifier e }
   | e = exp; o = operator;  f = exp     { Operator (o, e, f) };;
-  | LPAREN; e = expaction; RPAREN       {e}
