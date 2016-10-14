@@ -1,0 +1,5 @@
+main (  ) { 
+    While ( Operator ( Equal, "a" , Const 2 ) ) { 
+        Asg ( "a" := Operator ( Plus, "a" , Const 1 ) ) 
+    } 
+}

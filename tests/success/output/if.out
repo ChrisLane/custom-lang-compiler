@@ -1,0 +1,8 @@
+main (  ) { 
+    If ( Operator ( Equal, "x" , Const 0 ) ) { 
+        Deref ( "x" ) 
+    } Else { 
+        Asg ( "x" := Operator ( Plus, "x" , Const 1 ) ) ; 
+        Deref ( "x" ) 
+    } 
+}

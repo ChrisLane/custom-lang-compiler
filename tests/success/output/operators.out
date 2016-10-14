@@ -1,0 +1,13 @@
+main (  ) { 
+    Asg ( "x" := Operator ( Plus, "a" , "b" ) ) ; 
+    Asg ( "x" := Operator ( Minus, "a" , "b" ) ) ; 
+    Asg ( "x" := Operator ( Times, "a" , "b" ) ) ; 
+    Asg ( "x" := Operator ( Divide, "a" , "b" ) ) ; 
+    Asg ( "x" := Operator ( Leq, "a" , "b" ) ) ; 
+    Asg ( "x" := Operator ( Geq, "a" , "b" ) ) ; 
+    Asg ( "x" := Operator ( Equal, "a" , "b" ) ) ; 
+    Asg ( "x" := Operator ( Noteq, "a" , "b" ) ) ; 
+    Asg ( "x" := Operator ( And, "a" , "b" ) ) ; 
+    Asg ( "x" := Operator ( Or, "a" , "b" ) ) ; 
+    Asg ( "x" := Operator ( Not, Operator ( Or, "a" , "b" ) ) ) 
+}

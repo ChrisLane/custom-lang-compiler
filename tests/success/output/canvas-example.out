@@ -1,0 +1,6 @@
+main (  ) { 
+    New ( "x" = Const 1 ) In { 
+        Asg ( "x" := Operator ( Plus, "x" , Const 1 ) ) ; 
+        Deref ( "x" ) 
+    } 
+}
