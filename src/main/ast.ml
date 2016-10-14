@@ -47,6 +47,7 @@ let rec indentrec i s = match i with
 
 let indent i = indentrec i "";;
 
+
 let rec exp_string e i = match e with
   | Empty -> (indent i) ^ "empty "
   | Seq (e, f) -> exp_string e i ^ "; \n" ^ exp_string f i
@@ -56,6 +57,7 @@ let rec exp_string e i = match e with
   | Deref e -> (indent i) ^ "Deref ( " ^ exp_string e 0 ^ ") "
   | Operator (Not, Empty, e) -> (indent i) ^ "Operator ( Not, " ^ exp_string e 0 ^ ") "
   | Operator (op, e, f) -> (indent i) ^ "Operator ( " ^ opcode_string op ^ ", " ^ exp_string e 0 ^ ", " ^ exp_string f 0 ^ ") "
+  | Application (e, Seq(a,b)) -> (indent i) ^ "Application ( " ^ exp_string e 0 ^ "( " ^ assignseq (Seq(a, b)) 0 ^ ") "
   | Application (e, f) -> (indent i) ^ "Application ( " ^ exp_string e 0 ^ "( " ^ exp_string f 0 ^ ") "
   | Const n -> (indent i) ^ "Const " ^ string_of_int n ^ " "
   | Readint -> (indent i) ^ "Readint () "
@@ -63,6 +65,10 @@ let rec exp_string e i = match e with
   | Identifier s -> (indent i) ^ "\"" ^ s ^ "\" "
   | Let (s, e, f) -> (indent i) ^ "Let ( \"" ^ s ^ "\" = " ^ exp_string e 0 ^ ") In { \n" ^ exp_string f (i+1) ^ "\n" ^ indent i ^ "} "
   | New (s, e, f) -> (indent i) ^ "New ( \"" ^ s ^ "\" = " ^ exp_string e 0 ^ ") In { \n" ^ exp_string f (i+1) ^ "\n" ^ indent i ^ "} "
+
+and assignseq e i = match e with
+  | Seq (e, f) -> exp_string e i ^ ", " ^ exp_string f i
+  | _ -> exp_string e i
 
 let function_string = function
   | (name, args, body) -> name ^ " ( " ^ String.concat ", " args  ^ " ) { \n" ^ exp_string body 1 ^ "\n}"
