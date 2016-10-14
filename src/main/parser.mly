@@ -13,13 +13,17 @@
 
 %token              EOF
 
+%right              ASG
 %left               OR
 %left               AND
 %right              EQUALTO NOTEQTO
+%right              PRINTINT
 %left               LEQ GEQ
 %left               PLUS MINUS
 %left               TIMES DIVIDE
 %right              NOT
+%right              RETURN
+%right              LPAREN
 
 %start  <Ast.program>   program
 %%
@@ -28,36 +32,35 @@ program:
   | f = fundef*; EOF    { f };;
 
 fundef:
-  | n = NAME; p = funparams; b = bracedbody    { Function (n, p, b) };;
+  | n = NAME; p = funparams; b = bracedbody    { (n, p, b) };;
 
 funparams:
   | LPAREN; p = separated_list (PARAMSEP, NAME); RPAREN     { p };;
 
 bracedbody:
-  | LBRACE; RBRACE              { Empty }
-  | LBRACE; e = body; RBRACE    { e };;
+  | LBRACE; e = body*; s = set* RBRACE    { make_seq (e@s)  };;
 
 body:
-  | e = action                                                                      { e }
-  | e = action; SEMICOLON;  f = body                                                { Seq (e, f) }
-  | TYPE;       s = NAME;   ASG;        e = expaction;  SEMICOLON;      f = body    { New (s, e, f) }
-  | LET;        s = NAME;   ASG;        e = expaction;  IN;             f = body    { Let (s, e, f) };;
+  | e = exp SEMICOLON { e };;
 
-expaction:
-  | e = exp     { e }
-  | a = action  { a }
-  | p = params  { p };;
+exp:
+  | e = params                                                                      { e }
+  | e = INT                                                                         { Const e }
+  | e = NAME                                                                        { Identifier e }
+  | e = exp;    p = params                                                          { Application (e, p) }
+  | e = exp;    o = operator;   f = exp                                             { Operator (o, e, f) }
+  | e = exp;    ASG;            f = exp                                             { Asg (e, f) }
+  | IF;         p = params;     DO;     e = bracedbody;     ELSE;   f = bracedbody  { If (p, e, f) }
+  | WHILE;      p = params;     DO;     e = bracedbody                              { While (p, e) }
+  | RETURN;     e = exp                                                             { Deref e }
+  | PRINTINT;   e = exp                                                             { Printint e };;
 
-action:
-  | IF;         e = params;     DO;     f = bracedbody; ELSE;   g = bracedbody              { If (e, f, g) }
-  | WHILE;      e = params;     DO;     f = bracedbody                                      { While (e, f) }
-  | RETURN;     e = expaction                                                               { Deref e }
-  | PRINTINT;   e = expaction                                                               { Printint e }
-  | e = exp;    ASG             f = expaction                                               { Asg (e, f) }
-  | e = exp;    p = params                                                                  { Application (e, p) };;
+set:
+  | TYPE;   s = NAME; ASG; e = exp; SEMICOLON;  f = body*   { New (s, e, make_seq f) }
+  | LET;    s = NAME; ASG; e = exp; IN;         f = body*   { Let (s, e, make_seq f) };;
 
 params:
-  | LPAREN; e = expaction; RPAREN    { e };;
+  | LPAREN; e = exp; RPAREN; { e }
 
 %inline operator:
   | PLUS    { Plus }
@@ -71,8 +74,3 @@ params:
   | AND     { And }
   | OR      { Or }
   | NOT     { Not };;
-
-exp:
-  | e = INT                             { Const e }
-  | e = NAME                            { Identifier e }
-  | e = exp; o = operator;  f = exp     { Operator (o, e, f) };;

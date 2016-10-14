@@ -19,12 +19,13 @@ type expression =
   | Let of              string * expression * expression        (* let x = e in e *)
   | New of              string * expression * expression        (* new x = e in e *)
 
-type fundef = Function of  string * string list * expression
+type fundef = string * string list * expression
 
 type program = fundef list
 
 let rec make_seq = function
   | [] -> Empty
+  | [x] -> x
   | x :: xs -> Seq (x, make_seq xs)
 
 let opcode_string = function
@@ -58,4 +59,4 @@ let rec exp_string = function
   | New (s, e, f) -> "New ( \"" ^ s ^ "\" = " ^ exp_string e ^ " ) In { " ^ exp_string f ^ " } "
 
 let function_string = function
-  | Function (name, args, body) -> "Function " ^ name ^ " ( " ^ String.concat ", " args  ^ " ) { " ^ exp_string body ^ " }"
+  | (name, args, body) -> name ^ " ( " ^ String.concat ", " args  ^ " ) { " ^ exp_string body ^ " }"
