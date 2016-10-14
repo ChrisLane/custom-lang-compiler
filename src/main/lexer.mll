@@ -7,9 +7,11 @@ let int = ['0'-'9'] ['0'-'9']*
 let name = ['a'-'z' 'A'-'Z'] ['a'-'z' 'A'-'Z' '0'-'9']*
 let white = [' ' '\t']+
 let newline = '\r' | '\n' | "\r\n"
+let comment = "//"[^'\r' '\n']* newline
 
 rule read = parse
   | white   { read lexbuf }
+  | comment { read lexbuf }
   | newline { Lexing.new_line lexbuf; read lexbuf }
   | int     { INT (int_of_string (Lexing.lexeme lexbuf)) }
 
