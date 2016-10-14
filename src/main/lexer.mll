@@ -40,6 +40,7 @@ rule read = parse
   | "if"            { IF }
   | "else"          { ELSE }
   | '='             { ASG }
+  | "readint()"     { READINT }
   | "printint"      { PRINTINT }
   | "let"           { LET }
   | "return"        { RETURN }

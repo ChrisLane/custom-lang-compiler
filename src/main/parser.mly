@@ -7,7 +7,7 @@
 %token              LEQ GEQ EQUALTO NOTEQTO
 %token              AND OR NOT
 
-%token              TYPE LET IN WHILE IF ASG ELSE PRINTINT RETURN
+%token              TYPE LET WHILE IF ASG ELSE READINT PRINTINT RETURN
 
 %token              LPAREN RPAREN SEMICOLON LBRACE RBRACE PARAMSEP
 
@@ -54,11 +54,12 @@ exp:
   | IF;         p = params;     e = bracedbody;     ELSE;   f = bracedbody  { If (p, e, f) }
   | WHILE;      p = params;     e = bracedbody                              { While (p, e) }
   | RETURN;     e = exp                                                             { Deref e }
+  | READINT;                                                                        { Readint }
   | PRINTINT;   e = exp                                                             { Printint e };;
 
 set:
-  | TYPE;   s = NAME; ASG; e = exp; SEMICOLON;  f = body*   { New (s, e, make_seq f) }
-  | LET;    s = NAME; ASG; e = exp; IN;         f = body*   { Let (s, e, make_seq f) };;
+  | TYPE;   s = NAME; ASG; e = exp; SEMICOLON;  f = body*       { New (s, e, make_seq f) }
+  | LET;    s = NAME; ASG; e = exp; f = bracedbody              { Let (s, e, f) };;
 
 params:
   | LPAREN; e = exp; RPAREN; { e }
