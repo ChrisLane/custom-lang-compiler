@@ -41,23 +41,28 @@ let opcode_string = function
   | Or -> "Or"
   | Not -> "Not"
 
+let rec indentrec i s = match i with
+  | 0 -> s ^ ""
+  | i -> indentrec (i-1) (s ^ "    ");;
 
-let rec exp_string = function
-  | Empty -> "empty"
-  | Seq (e, f) -> "Seq ( " ^ exp_string e ^ "; " ^ exp_string f ^ " ) "
-  | While (e, f) -> "While ( " ^ exp_string e ^ " ) Do { " ^ exp_string f ^ " } "
-  | If (e, f, g) -> "If ( " ^ exp_string e ^ " ) Do { " ^ exp_string f ^ " } Else { " ^ exp_string g ^ " } "
-  | Asg (e, f) -> "Asg ( " ^ exp_string e ^ " := " ^ exp_string f ^ " ) "
-  | Deref e -> "Deref (" ^ exp_string e ^ ")"
-  | Operator (Not, Empty, e) -> "Operator ( Not, " ^ exp_string e ^ " ) "
-  | Operator (op, e, f) -> "Operator ( " ^ opcode_string op ^ ", " ^ exp_string e ^ ", " ^ exp_string f ^ " ) "
-  | Application (e, f) -> "Application ( " ^ exp_string e ^ " ( " ^ exp_string f ^ " ) "
-  | Const i -> "Const " ^ string_of_int i
-  | Readint -> "Readint () "
-  | Printint e -> "Printint ( " ^ exp_string e ^ " ) "
-  | Identifier s -> "\"" ^ s ^ "\""
-  | Let (s, e, f) -> "Let ( \"" ^ s ^ "\" = " ^ exp_string e ^ " ) In { " ^ exp_string f ^ " } "
-  | New (s, e, f) -> "New ( \"" ^ s ^ "\" = " ^ exp_string e ^ " ) In { " ^ exp_string f ^ " } "
+let indent i = indentrec i "";;
+
+let rec exp_string e i = match e with
+  | Empty -> (indent i) ^ "empty "
+  | Seq (e, f) -> exp_string e i ^ "; \n" ^ exp_string f i
+  | While (e, f) -> (indent i) ^ "While ( " ^ exp_string e 0 ^ ") { \n" ^ exp_string f (i+1) ^ "\n" ^ indent i ^ "} "
+  | If (e, f, g) -> (indent i) ^ "If ( " ^ exp_string e 0 ^ ") { \n" ^ exp_string f (i+1)  ^ "\n" ^ indent i ^ "} Else { \n" ^ exp_string g (i+1)  ^ "\n" ^ indent i ^ "} "
+  | Asg (e, f) -> (indent i) ^ "Asg ( " ^ exp_string e 0 ^ ":= " ^ exp_string f 0 ^ ") "
+  | Deref e -> (indent i) ^ "Deref ( " ^ exp_string e 0 ^ ") "
+  | Operator (Not, Empty, e) -> (indent i) ^ "Operator ( Not, " ^ exp_string e 0 ^ ") "
+  | Operator (op, e, f) -> (indent i) ^ "Operator ( " ^ opcode_string op ^ ", " ^ exp_string e 0 ^ ", " ^ exp_string f 0 ^ ") "
+  | Application (e, f) -> (indent i) ^ "Application ( " ^ exp_string e 0 ^ "( " ^ exp_string f 0 ^ ") "
+  | Const n -> (indent i) ^ "Const " ^ string_of_int n ^ " "
+  | Readint -> (indent i) ^ "Readint () "
+  | Printint e -> (indent i) ^ "Printint ( " ^ exp_string e 0 ^ ") "
+  | Identifier s -> (indent i) ^ "\"" ^ s ^ "\" "
+  | Let (s, e, f) -> (indent i) ^ "Let ( \"" ^ s ^ "\" = " ^ exp_string e 0 ^ ") In { \n" ^ exp_string f (i+1) ^ "\n" ^ indent i ^ "} "
+  | New (s, e, f) -> (indent i) ^ "New ( \"" ^ s ^ "\" = " ^ exp_string e 0 ^ ") In { \n" ^ exp_string f (i+1) ^ "\n" ^ indent i ^ "} "
 
 let function_string = function
-  | (name, args, body) -> name ^ " ( " ^ String.concat ", " args  ^ " ) { " ^ exp_string body ^ " }"
+  | (name, args, body) -> name ^ " ( " ^ String.concat ", " args  ^ " ) { \n" ^ exp_string body 1 ^ "\n}"
