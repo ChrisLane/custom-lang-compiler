@@ -44,18 +44,18 @@ body:
   | e = exp SEMICOLON { e };;
 
 exp:
-  | e = params                                                                      { e }
-  | e = INT                                                                         { Const e }
-  | e = NAME                                                                        { Identifier e }
-  | e = exp;    p = params                                                          { Application (e, p) }
-  | e = exp;    o = operator;   f = exp                                             { Operator (o, e, f) }
-  | NOT;        e = exp                                                             { Operator (Not, Empty, e) }
-  | e = exp;    ASG;            f = exp                                             { Asg (e, f) }
+  | e = params                                                              { e }
+  | e = INT                                                                 { Const e }
+  | e = NAME                                                                { Identifier e }
+  | e = exp;    p = paramlist                                               { Application (e, p) }
+  | e = exp;    o = operator;   f = exp                                     { Operator (o, e, f) }
+  | NOT;        e = exp                                                     { Operator (Not, Empty, e) }
+  | e = exp;    ASG;            f = exp                                     { Asg (e, f) }
   | IF;         p = params;     e = bracedbody;     ELSE;   f = bracedbody  { If (p, e, f) }
   | WHILE;      p = params;     e = bracedbody                              { While (p, e) }
-  | RETURN;     e = exp                                                             { Deref e }
-  | READINT;                                                                        { Readint }
-  | PRINTINT;   e = exp                                                             { Printint e };;
+  | RETURN;     e = exp                                                     { Deref e }
+  | READINT;                                                                { Readint }
+  | PRINTINT;   e = exp                                                     { Printint e };;
 
 set:
   | TYPE;   s = NAME; ASG; e = exp; SEMICOLON;  f = body*       { New (s, e, make_seq f) }
@@ -63,6 +63,9 @@ set:
 
 params:
   | LPAREN; e = exp; RPAREN; { e }
+
+paramlist:
+  | LPAREN; e = separated_list(PARAMSEP, exp); RPAREN;  { make_seq e }
 
 %inline operator:
   | PLUS    { Plus }
