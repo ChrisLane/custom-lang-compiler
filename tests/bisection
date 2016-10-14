@@ -5,18 +5,17 @@ bisection (f, a, b, tol, nmax) {
         int c = a + b;
         c = c / 2;
 
-        int fc = f(c);
-        if (fc == 0 || (b - a) / 2 <= tol) do {
-            return c
+        if (f(c) == 0 || (b - a) / 2 <= tol) do {
+            return c;
         } else {};
 
         n = n + 1;
         
         int fa = f(a);
         if (fc == fa) do {
-            a = c
+            a = c;
         } else {
-            b = c
-        }
-    }
+            b = c;
+        };
+    };
 }

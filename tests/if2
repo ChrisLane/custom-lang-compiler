@@ -4,9 +4,9 @@ main (aguement1, aguement2) {
 
     if (x >= 10 && p == 0) do {
         while (x >= 1) do {
-            x = x-1
-        }
+            x = x-1;
+        };
     } else {
-        x = 0
-    }
+        x = 0;
+    };
 }
