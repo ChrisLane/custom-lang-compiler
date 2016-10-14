@@ -1,18 +1,17 @@
 bisection (f, a, b, tol, nmax) {
     int n = 1;
 
-    while (n <= nmax) do {
+    while (n <= nmax) {
         int c = a + b;
         c = c / 2;
 
-        if (f(c) == 0 || (b - a) / 2 <= tol) do {
+        if (f(c) == 0 || (b - a) / 2 <= tol) {
             return c;
         } else {};
 
         n = n + 1;
         
-        int fa = f(a);
-        if (fc == fa) do {
+        if (f(c) == f(a)) {
             a = c;
         } else {
             b = c;

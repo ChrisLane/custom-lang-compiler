@@ -1,5 +1,5 @@
 main () {
-    if (x==0) do {
+    if (x==0) {
         return x;
     } else {
         x = x+1;

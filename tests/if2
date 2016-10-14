@@ -2,8 +2,8 @@ main (aguement1, aguement2) {
     int x = 0;
     x = 10;
 
-    if (x >= 10 && p == 0) do {
-        while (x >= 1) do {
+    if (x >= 10 && p == 0) {
+        while (x >= 1) {
             x = x-1;
         };
     } else {
