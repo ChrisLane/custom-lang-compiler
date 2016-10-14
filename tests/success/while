@@ -1,0 +1,6 @@
+// This is to test the while loop expression. This should parse.
+main() {
+    while (a == 2) {
+        a = a + 1;
+    };
+}

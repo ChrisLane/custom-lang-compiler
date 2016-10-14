@@ -1,0 +1,6 @@
+// This is to test let expressions. This should parse.
+main() {
+    let x = 50 {
+        x+x;
+    }
+}

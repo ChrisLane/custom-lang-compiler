@@ -1,0 +1,2 @@
+// This tests if a function with empty parameters and body parses. This should parse.
+main() {}

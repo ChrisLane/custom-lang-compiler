@@ -1,3 +1,4 @@
+// This tests all operators. This should parse.
 main() {
     x = a + b;
     x = a - b;

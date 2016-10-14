@@ -1,0 +1,6 @@
+// This is to text const expressions (1,2,3). This should parse.
+main() {
+    1;
+    2;
+    3;
+}

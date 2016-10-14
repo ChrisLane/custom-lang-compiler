@@ -1,0 +1,15 @@
+// This is the recursive bisection algorithm. This should parse.
+bisect (l, r) {
+    int mid = (r - l) / 2;
+    
+    if (mid >= E) {
+        if (f(r) * f(mid) <= 0) {
+            l = mid;
+        } else {
+            r = mid;
+        };
+        bisect(l, r);
+    } else {};
+
+    return mid;
+}

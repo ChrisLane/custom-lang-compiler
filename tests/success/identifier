@@ -1,0 +1,4 @@
+// This is to test identifier expresssions. This should parse.
+main() {
+    identifier = 10;
+}

@@ -1,0 +1,9 @@
+main() {
+    if (x==1) {
+        // This while loop is missing a parenthesis, this should cause the test to fail.
+        while (x >= y {
+            let p = 9 {
+            }
+        }
+    } else {}
+}

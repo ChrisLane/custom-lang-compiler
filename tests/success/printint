@@ -1,0 +1,4 @@
+// This tests the printint expression. This should parse.
+main() {
+    printint x;
+}

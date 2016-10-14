@@ -1,0 +1,4 @@
+// This is to test the readint expression. This should parse.
+main() {
+    readint();
+}

@@ -1,0 +1,4 @@
+// This tests the return expression. This should parse.
+main() {
+    return x;
+}

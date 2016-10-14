@@ -1,3 +1,4 @@
+// This tests the 'if' expression. This should parse.
 main() {
     if (x==0) {
         return x;

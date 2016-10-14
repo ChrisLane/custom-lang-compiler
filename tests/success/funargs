@@ -1,0 +1,2 @@
+// This is to test function arguements. This should parse.
+main(arguement1, arguement2) {}

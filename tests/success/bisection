@@ -1,3 +1,4 @@
+// This is the iterative bisection algorithm. This should parse.
 bisection (f, a, b, tol, nmax) {
     int n = 1;
 
