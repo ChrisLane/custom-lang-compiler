@@ -38,7 +38,6 @@ rule read = parse
 
   | "while"         { WHILE }
   | "if"            { IF }
-  | "do"            { DO }
   | "else"          { ELSE }
   | '='             { ASG }
   | "printint"      { PRINTINT }

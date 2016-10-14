@@ -29,17 +29,17 @@ let rec make_seq = function
   | x :: xs -> Seq (x, make_seq xs)
 
 let opcode_string = function
-  | Plus -> " Plus "
-  | Minus -> " Minus "
-  | Times -> " Times "
-  | Divide -> " Divide "
-  | Leq -> " Leq "
-  | Geq -> " Geq "
-  | Equal -> " Equal "
-  | Noteq -> " Noteq "
-  | And -> " And "
-  | Or -> " Or "
-  | Not -> " Not "
+  | Plus -> "Plus"
+  | Minus -> "Minus"
+  | Times -> "Times"
+  | Divide -> "Divide"
+  | Leq -> "Leq"
+  | Geq -> "Geq"
+  | Equal -> "Equal"
+  | Noteq -> "Noteq"
+  | And -> "And"
+  | Or -> "Or"
+  | Not -> "Not"
 
 
 let rec exp_string = function
@@ -49,7 +49,8 @@ let rec exp_string = function
   | If (e, f, g) -> "If ( " ^ exp_string e ^ " ) Do { " ^ exp_string f ^ " } Else { " ^ exp_string g ^ " } "
   | Asg (e, f) -> "Asg ( " ^ exp_string e ^ " := " ^ exp_string f ^ " ) "
   | Deref e -> "Deref (" ^ exp_string e ^ ")"
-  | Operator (op, e, f) -> "Operator ( " ^ opcode_string op ^ exp_string e ^ " " ^ exp_string f ^ " ) "
+  | Operator (Not, Empty, e) -> "Operator ( Not, " ^ exp_string e ^ " ) "
+  | Operator (op, e, f) -> "Operator ( " ^ opcode_string op ^ ", " ^ exp_string e ^ ", " ^ exp_string f ^ " ) "
   | Application (e, f) -> "Application ( " ^ exp_string e ^ " ( " ^ exp_string f ^ " ) "
   | Const i -> "Const " ^ string_of_int i
   | Readint -> "Readint () "

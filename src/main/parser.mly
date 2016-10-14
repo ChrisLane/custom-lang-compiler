@@ -7,7 +7,7 @@
 %token              LEQ GEQ EQUALTO NOTEQTO
 %token              AND OR NOT
 
-%token              TYPE LET IN WHILE IF ASG DO ELSE PRINTINT RETURN
+%token              TYPE LET IN WHILE IF ASG ELSE PRINTINT RETURN
 
 %token              LPAREN RPAREN SEMICOLON LBRACE RBRACE PARAMSEP
 
@@ -21,8 +21,8 @@
 %left               LEQ GEQ
 %left               PLUS MINUS
 %left               TIMES DIVIDE
-%right              NOT
 %right              RETURN
+%right              NOT
 %right              LPAREN
 
 %start  <Ast.program>   program
@@ -49,9 +49,10 @@ exp:
   | e = NAME                                                                        { Identifier e }
   | e = exp;    p = params                                                          { Application (e, p) }
   | e = exp;    o = operator;   f = exp                                             { Operator (o, e, f) }
+  | NOT;        e = exp                                                             { Operator (Not, Empty, e) }
   | e = exp;    ASG;            f = exp                                             { Asg (e, f) }
-  | IF;         p = params;     DO;     e = bracedbody;     ELSE;   f = bracedbody  { If (p, e, f) }
-  | WHILE;      p = params;     DO;     e = bracedbody                              { While (p, e) }
+  | IF;         p = params;     e = bracedbody;     ELSE;   f = bracedbody  { If (p, e, f) }
+  | WHILE;      p = params;     e = bracedbody                              { While (p, e) }
   | RETURN;     e = exp                                                             { Deref e }
   | PRINTINT;   e = exp                                                             { Printint e };;
 
@@ -73,4 +74,3 @@ params:
   | NOTEQTO { Noteq }
   | AND     { And }
   | OR      { Or }
-  | NOT     { Not };;
