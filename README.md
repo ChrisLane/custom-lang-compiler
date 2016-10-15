@@ -16,7 +16,7 @@ Test files can be found in the "tests" directory.
 test/success source files will be parsed, test/fail source files will not be parsed
 
 Example run: `./main test/success/bisection.src`
-All tests can be done by running the test/runtests.sh script. The script will output which tests passed and which failed.
+All tests can be done by running the `bash test/runtests.sh`. The script will output which tests passed and which failed.
 
 ## Syntax
  * Function (Function name, parameters, function body)
