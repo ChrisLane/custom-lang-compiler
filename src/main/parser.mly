@@ -61,7 +61,7 @@ exp:
   | e = exp;    ASG;            f = exp                                     { Asg (e, f) }
   | IF;         p = params;     e = bracedbody;     ELSE;   f = bracedbody  { If (p, e, f) }
   | WHILE;      p = params;     e = bracedbody                              { While (p, e) }
-  | RETURN;     e = exp                                                     { Deref e }
+  | RETURN;     e = exp                                                     { e }
   | READINT;                                                                { Readint }
   | PRINTINT;   e = exp                                                     { Printint e };;
 
