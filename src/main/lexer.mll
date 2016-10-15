@@ -27,7 +27,7 @@ rule read = parse
   | "&&"    { AND }
   | "||"    { OR }
   | '!'     { NOT }
-  
+
   | '('     { LPAREN }
   | ')'     { RPAREN }
   | ';'     { SEMICOLON }
