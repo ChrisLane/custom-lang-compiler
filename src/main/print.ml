@@ -3,6 +3,7 @@ open Printf
 open Lexing
 exception Error
 
+(* Error printing *)
 let parse_with_error lexbuf =
   try Parser.program Lexer.read lexbuf with
   | SyntaxError msg ->  let _ = Printf.eprintf "%s%!" msg in raise Error
@@ -13,6 +14,7 @@ let parse_with_error lexbuf =
         pos.pos_lnum col (Lexing.lexeme lexbuf) in
     raise Error;;
 
+(* Parse and then print if successful *)
 let parse_file filename = open_in filename
                           |> Lexing.from_channel
                           |> parse_with_error

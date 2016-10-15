@@ -1,8 +1,10 @@
+(* Operators *)
 type opcode =
   | Plus | Minus | Times | Divide
   | Leq | Geq | Equal | Noteq
   | And | Or | Not
 
+(* Expressions *)
 type expression =
   | Empty
   | Seq of              expression * expression                 (* e; e *)
@@ -19,15 +21,19 @@ type expression =
   | Let of              string * expression * expression        (* let x = e in e *)
   | New of              string * expression * expression        (* new x = e in e *)
 
+(* Function *)
 type fundef = string * string list * expression
 
+(* Program *)
 type program = fundef list
 
+(* Convert a list to a Seq expression*)
 let rec make_seq = function
   | [] -> Empty
   | [x] -> x
   | x :: xs -> Seq (x, make_seq xs)
 
+(* Return string values for operators *)
 let opcode_string = function
   | Plus -> "Plus"
   | Minus -> "Minus"
@@ -41,13 +47,15 @@ let opcode_string = function
   | Or -> "Or"
   | Not -> "Not"
 
+(* Build a given indentation level string *)
 let rec indentrec i s = match i with
   | 0 -> s ^ ""
   | i -> indentrec (i-1) (s ^ "    ");;
 
+(* Return a given indentation level's string (less args) *)
 let indent i = indentrec i "";;
 
-
+(* Return string values for expressions*)
 let rec exp_string e i = match e with
   | Empty -> (indent i) ^ "empty "
   | Seq (e, f) -> exp_string e i ^ "; \n" ^ exp_string f i
@@ -57,7 +65,7 @@ let rec exp_string e i = match e with
   | Deref e -> (indent i) ^ "Deref ( " ^ exp_string e 0 ^ ") "
   | Operator (Not, Empty, e) -> (indent i) ^ "Operator ( Not, " ^ exp_string e 0 ^ ") "
   | Operator (op, e, f) -> (indent i) ^ "Operator ( " ^ opcode_string op ^ ", " ^ exp_string e 0 ^ ", " ^ exp_string f 0 ^ ") "
-  | Application (e, Seq(a,b)) -> (indent i) ^ "Application ( " ^ exp_string e 0 ^ "( " ^ assignseq (Seq(a, b)) 0 ^ ") "
+  | Application (e, Seq(a,b)) -> (indent i) ^ "Application ( " ^ exp_string e 0 ^ "( " ^ applicationseq (Seq(a, b)) 0 ^ ") "
   | Application (e, f) -> (indent i) ^ "Application ( " ^ exp_string e 0 ^ "( " ^ exp_string f 0 ^ ") "
   | Const n -> (indent i) ^ "Const " ^ string_of_int n ^ " "
   | Readint -> (indent i) ^ "Readint () "
@@ -66,9 +74,12 @@ let rec exp_string e i = match e with
   | Let (s, e, f) -> (indent i) ^ "Let ( \"" ^ s ^ "\" = " ^ exp_string e 0 ^ ") In { \n" ^ exp_string f (i+1) ^ "\n" ^ indent i ^ "} "
   | New (s, e, f) -> (indent i) ^ "New ( \"" ^ s ^ "\" = " ^ exp_string e 0 ^ ") In { \n" ^ exp_string f (i+1) ^ "\n" ^ indent i ^ "} "
 
-and assignseq e i = match e with
+(* Seperate string rule for the Seq expression within application parameters.
+   This ensures that parameters are not splt onto seperate lines *)
+and applicationseq e i = match e with
   | Seq (e, f) -> exp_string e i ^ ", " ^ exp_string f i
   | _ -> exp_string e i
 
+(* Return the string of a function *)
 let function_string = function
   | (name, args, body) -> name ^ " ( " ^ String.concat ", " args  ^ " ) { \n" ^ exp_string body 1 ^ "\n}"
