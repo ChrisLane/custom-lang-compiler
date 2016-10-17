@@ -7,7 +7,7 @@ bisection (f, a, b, tol, nmax) {
         c = c / 2;
 
         if (f(c) == 0 || (b - a) / 2 <= tol) {
-            return c;
+            return $c;
         } else {};
 
         n = n + 1;
