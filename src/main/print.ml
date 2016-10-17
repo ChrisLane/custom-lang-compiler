@@ -1,14 +1,5 @@
 open Ast
 
-(* Parse and then print if successful *)
-let parse_file filename = open_in filename
-                          |> Lexing.from_channel
-                          |> Error.parse_with_error
-                          |> List.map function_string
-                          |> String.concat " "
-                          |> print_string
-                          |> print_newline;;
-
 (* Return string values for operators *)
 let opcode_string = function
   | Plus -> "Plus"
@@ -59,3 +50,12 @@ and applicationseq e i = match e with
 (* Return the string of a function *)
 let function_string = function
   | (name, args, body) -> name ^ " ( " ^ String.concat ", " args  ^ " ) { \n" ^ exp_string body 1 ^ "\n}"
+
+(* Parse and then print if successful *)
+let parse_file filename = open_in filename
+                          |> Lexing.from_channel
+                          |> Error.parse_with_error
+                          |> List.map function_string
+                          |> String.concat " "
+                          |> print_string
+                          |> print_newline;;
