@@ -32,17 +32,3 @@ let rec make_seq = function
   | [] -> Empty
   | [x] -> x
   | x :: xs -> Seq (x, make_seq xs)
-
-(* Return string values for operators *)
-let opcode_string = function
-  | Plus -> "Plus"
-  | Minus -> "Minus"
-  | Times -> "Times"
-  | Divide -> "Divide"
-  | Leq -> "Leq"
-  | Geq -> "Geq"
-  | Equal -> "Equal"
-  | Noteq -> "Noteq"
-  | And -> "And"
-  | Or -> "Or"
-  | Not -> "Not"
