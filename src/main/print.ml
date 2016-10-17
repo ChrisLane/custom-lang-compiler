@@ -46,7 +46,7 @@ let rec exp_string e i = match e with
   | Const n -> (indent i) ^ "Const " ^ string_of_int n ^ " "
   | Readint -> (indent i) ^ "Readint () "
   | Printint e -> (indent i) ^ "Printint ( " ^ exp_string e 0 ^ ") "
-  | Identifier s -> (indent i) ^ "\"" ^ s ^ "\" "
+  | Identifier s -> (indent i) ^ "Identifier \"" ^ s ^ "\" "
   | Let (s, e, f) -> (indent i) ^ "Let ( \"" ^ s ^ "\" = " ^ exp_string e 0 ^ ") In { \n" ^ exp_string f (i+1) ^ "\n" ^ indent i ^ "} "
   | New (s, e, f) -> (indent i) ^ "New ( \"" ^ s ^ "\" = " ^ exp_string e 0 ^ ") In { \n" ^ exp_string f (i+1) ^ "\n" ^ indent i ^ "} "
 
