@@ -27,6 +27,7 @@ rule read = parse
   | "&&"    { AND }
   | "||"    { OR }
   | '!'     { NOT }
+  | '$'     { DEREF }
 
   | '('     { LPAREN }
   | ')'     { RPAREN }
