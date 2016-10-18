@@ -1,3 +1,9 @@
+(* Data types *)
+type dtype =
+  | Int of  int
+  | Bool of bool
+  | Var of string
+
 (* Operators *)
 type opcode =
   | Plus | Minus | Times | Divide
