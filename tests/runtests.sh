@@ -1,11 +1,9 @@
 #!/bin/sh
 set -e
 
-dir=$1
-
 cd $(dirname $0)
 
-for file in **/*.src
+for file in parse/**/*.src
 do
     output=$(basename "$file" | cut -d. -f1)
     origin=$(dirname "$file")
