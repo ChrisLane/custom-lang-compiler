@@ -4,6 +4,7 @@ let dtype_string = function
   | Int i -> string_of_int i
   | Bool b -> string_of_bool b
   | Var v -> v
+  | Unit -> " "
 
 (* Return string values for operators *)
 let opcode_string = function

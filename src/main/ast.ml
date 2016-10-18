@@ -3,6 +3,7 @@ type dtype =
   | Int of  int
   | Bool of bool
   | Var of string
+  | Unit
 
 (* Operators *)
 type opcode =
