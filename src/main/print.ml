@@ -1,5 +1,6 @@
 open Ast
 
+(* Return string values for data types *)
 let dtype_string = function
   | Int i -> string_of_int i
   | Bool b -> string_of_bool b
