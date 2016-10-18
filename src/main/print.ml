@@ -1,5 +1,10 @@
 open Ast
 
+let dtype_string = function
+  | Int i -> string_of_int i
+  | Bool b -> string_of_bool b
+  | Var v -> v
+
 (* Return string values for operators *)
 let opcode_string = function
   | Plus -> "Plus"
@@ -49,7 +54,7 @@ and applicationseq e i = match e with
 
 (* Return the string of a function *)
 let function_string = function
-  | (name, args, body) -> name ^ " ( " ^ String.concat ", " args  ^ " ) { \n" ^ exp_string body 1 ^ "\n}"
+  | (name, args, body) -> name ^ " ( " ^ (String.concat ", " args)  ^ " ) { \n" ^ exp_string body 1 ^ "\n}"
 
 (* Parse and then print if successful *)
 let parse_file filename = open_in filename
@@ -59,3 +64,13 @@ let parse_file filename = open_in filename
                           |> String.concat " "
                           |> print_string
                           |> print_newline;;
+
+(* Parse, evaluate and print a return value if successful *)
+let eval_file filename = open_in filename
+                         |> Lexing.from_channel
+                         |> Error.parse_with_error
+                         |> List.map Eval.eval_function
+                         |> List.map dtype_string
+                         |> String.concat " "
+                         |> print_string
+                         |> print_newline;;
