@@ -1,5 +1,5 @@
 main (  ) { 
     Let ( "x" = Const 50 ) In { 
-        Operator ( Plus, "x" , "x" ) 
+        Operator ( Plus, Identifier "x" , Identifier "x" ) 
     } 
 }

@@ -1,4 +1,4 @@
 main (  ) { 
-    Asg ( "x" := Const 50 ) ; 
-    Asg ( "x" := Operator ( Divide, Operator ( Plus, Const 10 , Const 20 ) , Const 3 ) ) 
+    Asg ( Identifier "x" := Const 50 ) ; 
+    Asg ( Identifier "x" := Operator ( Divide, Operator ( Plus, Const 10 , Const 20 ) , Const 3 ) ) 
 }

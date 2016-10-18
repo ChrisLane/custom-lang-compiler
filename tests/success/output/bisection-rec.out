@@ -1,15 +1,15 @@
 bisect ( l, r ) { 
-    New ( "mid" = Operator ( Divide, Operator ( Minus, "r" , "l" ) , Const 2 ) ) In { 
-        If ( Operator ( Geq, "mid" , "E" ) ) { 
-            If ( Operator ( Leq, Operator ( Times, Application ( "f" ( "r" ) , Application ( "f" ( "mid" ) ) , Const 0 ) ) { 
-                Asg ( "l" := "mid" ) 
+    New ( "mid" = Operator ( Divide, Operator ( Minus, Identifier "r" , Identifier "l" ) , Const 2 ) ) In { 
+        If ( Operator ( Geq, Identifier "mid" , Identifier "E" ) ) { 
+            If ( Operator ( Leq, Operator ( Times, Application ( Identifier "f" ( Identifier "r" ) ) , Application ( Identifier "f" ( Identifier "mid" ) ) ) , Const 0 ) ) { 
+                Asg ( Identifier "l" := Identifier "mid" ) 
             } Else { 
-                Asg ( "r" := "mid" ) 
+                Asg ( Identifier "r" := Identifier "mid" ) 
             } ; 
-            Application ( "bisect" ( "l" , "r" ) 
+            Application ( Identifier "bisect" ( Identifier "l" , Identifier "r" ) ) 
         } Else { 
             empty 
         } ; 
-        Deref ( "mid" ) 
+        Deref ( Identifier "mid" ) 
     } 
 }

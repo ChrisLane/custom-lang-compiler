@@ -1,18 +1,18 @@
 bisection ( f, a, b, tol, nmax ) { 
     New ( "n" = Const 1 ) In { 
-        While ( Operator ( Leq, "n" , "nmax" ) ) { 
-            New ( "c" = Operator ( Plus, "a" , "b" ) ) In { 
-                Asg ( "c" := Operator ( Divide, "c" , Const 2 ) ) ; 
-                If ( Operator ( Or, Operator ( Equal, Application ( "f" ( "c" ) , Const 0 ) , Operator ( Leq, Operator ( Divide, Operator ( Minus, "b" , "a" ) , Const 2 ) , "tol" ) ) ) { 
-                    Deref ( "c" ) 
+        While ( Operator ( Leq, Identifier "n" , Identifier "nmax" ) ) { 
+            New ( "c" = Operator ( Plus, Identifier "a" , Identifier "b" ) ) In { 
+                Asg ( Identifier "c" := Operator ( Divide, Identifier "c" , Const 2 ) ) ; 
+                If ( Operator ( Or, Operator ( Equal, Application ( Identifier "f" ( Identifier "c" ) ) , Const 0 ) , Operator ( Leq, Operator ( Divide, Operator ( Minus, Identifier "b" , Identifier "a" ) , Const 2 ) , Identifier "tol" ) ) ) { 
+                    Deref ( Identifier "c" ) 
                 } Else { 
                     empty 
                 } ; 
-                Asg ( "n" := Operator ( Plus, "n" , Const 1 ) ) ; 
-                If ( Operator ( Equal, Application ( "f" ( "c" ) , Application ( "f" ( "a" ) ) ) { 
-                    Asg ( "a" := "c" ) 
+                Asg ( Identifier "n" := Operator ( Plus, Identifier "n" , Const 1 ) ) ; 
+                If ( Operator ( Equal, Application ( Identifier "f" ( Identifier "c" ) ) , Application ( Identifier "f" ( Identifier "a" ) ) ) ) { 
+                    Asg ( Identifier "a" := Identifier "c" ) 
                 } Else { 
-                    Asg ( "b" := "c" ) 
+                    Asg ( Identifier "b" := Identifier "c" ) 
                 } 
             } 
         } 

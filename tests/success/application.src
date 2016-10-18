@@ -1,4 +1,4 @@
 // This tests the Application expression. The code should parse.
 main() {
-    f(x);
+   f(x);
 }
