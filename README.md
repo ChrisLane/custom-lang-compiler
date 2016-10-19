@@ -1,4 +1,4 @@
-# Compiler-Construction
+# Compiler Construction Development [![Build Status](https://travis-ci.org/ChrisLane/Compiler-Construction.svg?branch=develop)](https://travis-ci.org/ChrisLane/Compiler-Construction)
 Implementing a compiler.
 
 ## Usage
