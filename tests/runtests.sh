@@ -11,6 +11,6 @@ do
     if [ -z "$(diff <(../main parse "$file" 2>&1 || true) $origin/output/$output.out)" ]; then
         echo "Passed test for file: $file"
     else
-        echo "Failed test for file: $file"
+        echo "Failed test for file: $file" && exit 1
     fi
 done
