@@ -45,7 +45,7 @@ let rec eval_exp = function
       | Var x ->  Hashtbl.find store x
       | _ -> failwith "Can only dereference a variable.")
   | While (e, f) -> (match eval_exp e with
-      | Bool true -> eval_exp f
+      | Bool true -> ignore (eval_exp f); eval_exp (While (e, f))
       | Bool false -> Unit
       | _ -> failwith "Invalid value for while condition.")
   | If (e, f, g) -> (match eval_exp e with
