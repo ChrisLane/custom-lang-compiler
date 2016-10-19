@@ -1,4 +1,6 @@
-# Compiler Construction Development [![Build Status](https://travis-ci.org/ChrisLane/Compiler-Construction.svg?branch=develop)](https://travis-ci.org/ChrisLane/Compiler-Construction)
+# Compiler Construction Development
+
+master: [![Build Status](https://travis-ci.org/ChrisLane/Compiler-Construction.svg?branch=master)](https://travis-ci.org/ChrisLane/Compiler-Construction) develop:[![Build Status](https://travis-ci.org/ChrisLane/Compiler-Construction.svg?branch=develop)](https://travis-ci.org/ChrisLane/Compiler-Construction)
 Implementing a compiler.
 
 ## Usage
@@ -12,7 +14,7 @@ Once these are installed, run the `make` command in the main directory. If succe
 
 ### Running
 To the run the parser, use the command `./main <filename>`.
-Test files can be found in the "tests" directory. 
+Test files can be found in the "tests" directory.
 test/success source files will be parsed, test/fail source files will not be parsed
 
 Example run: `./main test/success/bisection.src`
