@@ -9,7 +9,9 @@ Implementing a compiler.
 Please install the following:
 * Make
 * Opam
-* Menhir ($ opam install menhir)
+* ocamlbuild (`$ opam install ocamlbuild`)
+* ocamlfind (`$ opam install ocamlfind`)
+* Menhir (`$ opam install menhir`)
 
 Once these are installed, run the `make` command in the main directory. If successful, a binary should have been created in the same directory.
 
