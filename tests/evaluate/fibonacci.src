@@ -1,0 +1,13 @@
+main () {
+    x = 50;
+    a = 0;
+    b = 1;
+
+    printint $a;
+    while ($b <= ($x-1)) {
+        printint $b;
+        temp = $a + $b;
+        a = $b;
+        b = $temp;
+    };
+}
