@@ -15,17 +15,22 @@ Please install the following:
 
 Once these are installed, run the `make` command in the main directory. If successful, a binary should have been created in the same directory.
 
-### Running
+### Running Tasks
 Running the ./main binary on its own will output available tasks.
 
 Current Tasks (./main \<task> \<filename>):
 parse -     This will parse the source file and output the parsed structure.
 evaluate -  This will evaluate the source file and return an output for the function.
 
+Example run: `./main parse mysourcefile.src`
+
+### Running Tests
 Test sources can be found in the "tests" directory.
-"success" directory files will be succeed, "fail" directory files will purposefully fail.
+"success" directory files will succeed, "fail" directory files will purposefully fail.
+Source files use the .src extension and must have a matching filename with extension .out in the "output" directory that contains the expected output for the source file.
 
 Example run: `./main parse test/parse/success/bisection.src`
+
 All tests can be done by running the `make test` command. The script will output which tests passed and which failed.
 
 ## Syntax
