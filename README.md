@@ -24,7 +24,9 @@ evaluate -  This will evaluate the source file and return an output for the func
 
 Example run: `./main parse mysourcefile.src`
 
-### Running Tests
+### Testing
+The status of the tests included in the repository can be found at the [Travis Page](https://travis-ci.org/ChrisLane/Compiler-Construction), this will display "Passed" if all tests are passing and "Failed" if a test fails.
+
 Test sources can be found in the "tests" directory.
 "success" directory files will succeed, "fail" directory files will purposefully fail.
 Source files use the .src extension and must have a matching filename with extension .out in the "output" directory that contains the expected output for the source file.
