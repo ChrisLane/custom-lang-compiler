@@ -1,2 +1,2 @@
 <src/**>: include
-true: use_menhir
+true: use_menhir, bin_annot
