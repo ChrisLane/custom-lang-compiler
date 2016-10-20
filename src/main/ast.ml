@@ -8,8 +8,8 @@ type dtype =
 (* Operators *)
 type opcode =
   | Plus | Minus | Times | Divide
-  | Leq | Geq | Equal | Noteq
-  | And | Or | Not
+  | Leq  | Geq   | Equal | Noteq
+  | And  | Or    | Not
 
 (* Expressions *)
 type expression =
