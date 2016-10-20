@@ -1,0 +1,5 @@
+// This is to test identifier expresssions. This should evaluate to 10.
+main() {
+    identifier = 10;
+    return $identifier;
+}

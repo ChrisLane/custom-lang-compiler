@@ -1,0 +1,5 @@
+// This tests the deref expression. This should evaluate to 1.
+main() {
+    x = 1;
+    return $x;
+}

@@ -1,3 +1,4 @@
+// This test will evaluate to print fibonacci numbers less than 50.
 main () {
     x = 50;
     a = 0;

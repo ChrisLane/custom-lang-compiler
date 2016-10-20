@@ -1,0 +1,8 @@
+// This tests the boolean operators. This should evaluate to true.
+main () {
+    a = 1 <= 2;
+    b = 2 >= 1;
+    c = 1 == 1;
+    d = 1 != 2;
+    x = $a && $b && $c && $d && ($a || $b);
+}

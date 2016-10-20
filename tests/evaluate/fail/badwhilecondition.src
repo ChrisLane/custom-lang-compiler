@@ -1,0 +1,4 @@
+// While conditions should result in a boolean. This should not evaluate.
+main() {
+    while (9001) {};
+}

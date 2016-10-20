@@ -1,0 +1,4 @@
+// We should only be able to assign to an identifier. This should not evaluate.
+main() {
+    10 = 20;
+}

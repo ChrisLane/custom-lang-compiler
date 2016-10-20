@@ -1,0 +1,4 @@
+// If conditions should result in a boolean. This should not evaluate.
+main() {
+    if (9001) {} else {};
+}
