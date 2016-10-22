@@ -23,6 +23,7 @@ let eval_operator_compare op e f = match op with
 let eval_operator_bool op e f = match op with
   | And     -> e && f
   | Or      -> e || f
+  | Not     ->  not f
   | _       -> failwith "Operator must be of type bool."
 
 (* Choose correct operator evaluation depending on types *)
@@ -35,6 +36,10 @@ let eval_operator op e f = match e, f with
   | Bool e, Bool f -> (match op with
       | And | Or    -> Bool (eval_operator_bool op e f)
       | _           -> failwith "Operator cannot be applied to booleans.")
+
+  | e, Bool f -> (match op with
+      | Not -> Bool (not f)
+      | _   -> failwith "Operator must be of type not.")
 
   | _ -> failwith "Values are of different types. Operator cannot be applied."
 

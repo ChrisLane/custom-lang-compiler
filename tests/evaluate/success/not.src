@@ -1,0 +1,7 @@
+// This tests the not operators. It should evaluate to true.
+main() {
+    x = 0 == 0;
+    y = 0 == 1;
+
+    z = $x && !$y;
+}
