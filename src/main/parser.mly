@@ -70,7 +70,7 @@ exp:
 (* Match variable setting expressions with bodies *)
 set:
   | TYPE;   s = NAME; ASG; e = exp; SEMICOLON;  f = body*       { New (s, e, make_seq f) }
-  | LET;    s = NAME; ASG; e = exp; f = bracedbody              { Let (s, e, f) };;
+  | LET;    s = NAME; ASG; e = exp; f = bracedbody SEMICOLON    { Let (s, e, f) };;
 
 (* Match an expression within parentheses *)
 params:
