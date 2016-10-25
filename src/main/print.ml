@@ -3,6 +3,7 @@ open Ast
 (* Return string values for data types *)
 let dtype_string = function
   | Int i   -> string_of_int i
+  | Ref i   -> failwith "Reached point of printing a ref"
   | Bool b  -> string_of_bool b
   | Var v   -> v
   | Unit    -> " "

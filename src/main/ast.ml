@@ -1,6 +1,7 @@
 (* Data types *)
 type dtype =
-  | Int of  int
+  | Int of int
+  | Ref of int
   | Bool of bool
   | Var of string
   | Unit
