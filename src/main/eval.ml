@@ -42,19 +42,21 @@ let eval_operator op e f = match e, f with
 
   | _ -> failwith "Values are of different types. Operator cannot be applied."
 
+(* Find a variable in variable storage and return it's value *)
 let rec lookup x env store = match env with
   | []                          -> failwith "Could not find a variable during lookup."
   | (y, Ref z)::ys  when x = y  -> Hashtbl.find store (string_of_int z)
   | (y, z)::ys      when x = y  -> z
   | y::ys                       -> lookup x ys store
 
+(* Find a variable in variable storage and update it's value *)
 let rec update x v env store = match env with
   | []                          -> failwith "Could not find a variable to update."
   | (y, Ref z)::ys  when x = y  -> Hashtbl.replace store (string_of_int z) v
   | y::ys                       -> update x v ys store
 
+(* References for variable pointers *)
 let addr_gbl = ref 0
-
 let newref() = addr_gbl:=!addr_gbl+1; !addr_gbl
 
 (* Evaluate an expression *)
