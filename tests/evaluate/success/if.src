@@ -1,6 +1,6 @@
 // This tests the 'if' expression. This should evaluate to 3.
 main() {
-    x = 2;
+    var x = 2;
     if ($x == 0) {
         return $x;
     } else {

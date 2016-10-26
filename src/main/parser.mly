@@ -7,7 +7,7 @@
 %token              LEQ GEQ EQUALTO NOTEQTO
 %token              AND OR NOT
 (* Expressions *)
-%token              TYPE LET WHILE IF ASG ELSE READINT PRINTINT RETURN DEREF
+%token              TYPE LET WHILE IF ASG ELSE READINT PRINT RETURN DEREF
 (* Formatting *)
 %token              LPAREN RPAREN SEMICOLON LBRACE RBRACE PARAMSEP
 %token              EOF
@@ -17,7 +17,7 @@
 %left               OR
 %left               AND
 %right              EQUALTO NOTEQTO
-%right              PRINTINT
+%right              PRINT
 %left               LEQ GEQ
 %left               PLUS MINUS
 %left               TIMES DIVIDE
@@ -65,12 +65,12 @@ exp:
   | RETURN;     e = exp                                                     { e }
   | DEREF;      e = exp;                                                    { Deref e }
   | READINT;                                                                { Readint }
-  | PRINTINT;   e = exp                                                     { Printint e };;
+  | PRINT;      e = exp                                                     { Print e };;
 
 (* Match variable setting expressions with bodies *)
 set:
-  | TYPE;   s = NAME; ASG; e = exp; SEMICOLON;  f = body*       { New (s, e, make_seq f) }
-  | LET;    s = NAME; ASG; e = exp; f = bracedbody SEMICOLON    { Let (s, e, f) };;
+  | TYPE;   s = NAME; ASG; e = exp; SEMICOLON;  f = body*; g = set*     { New (s, e, make_seq (f@g)) }
+  | LET;    s = NAME; ASG; e = exp; f = bracedbody SEMICOLON            { Let (s, e, f) };;
 
 (* Match an expression within parentheses *)
 params:

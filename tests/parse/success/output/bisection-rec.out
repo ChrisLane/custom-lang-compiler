@@ -2,9 +2,13 @@ bisect ( l, r ) {
     New ( "mid" = Operator ( Divide, Operator ( Minus, Identifier "r" , Identifier "l" ) , Const 2 ) ) In { 
         If ( Operator ( Geq, Identifier "mid" , Identifier "E" ) ) { 
             If ( Operator ( Leq, Operator ( Times, Application ( Identifier "f" ( Identifier "r" ) ) , Application ( Identifier "f" ( Identifier "mid" ) ) ) , Const 0 ) ) { 
-                Asg ( Identifier "l" := Identifier "mid" ) 
+                New ( "l" = Identifier "mid" ) In { 
+                    empty 
+                } 
             } Else { 
-                Asg ( Identifier "r" := Identifier "mid" ) 
+                New ( "r" = Identifier "mid" ) In { 
+                    empty 
+                } 
             } ; 
             Application ( Identifier "bisect" ( Identifier "l" , Identifier "r" ) ) 
         } Else { 

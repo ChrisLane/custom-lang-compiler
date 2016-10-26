@@ -24,7 +24,7 @@ type expression =
   | Application of      expression * expression                 (* e(e) *)
   | Const of            int                                     (* 7 *)
   | Readint                                                     (* read_int () *)
-  | Printint of         expression                              (* print_int (e) *)
+  | Print of            expression                              (* print_int (e) *)
   | Identifier of       string                                  (* x *)
   | Let of              string * expression * expression        (* let x = e in e *)
   | New of              string * expression * expression        (* new x = e in e *)

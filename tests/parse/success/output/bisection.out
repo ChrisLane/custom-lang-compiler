@@ -10,9 +10,13 @@ bisection ( f, a, b, tol, nmax ) {
                 } ; 
                 Asg ( Identifier "n" := Operator ( Plus, Identifier "n" , Const 1 ) ) ; 
                 If ( Operator ( Equal, Application ( Identifier "f" ( Identifier "c" ) ) , Application ( Identifier "f" ( Identifier "a" ) ) ) ) { 
-                    Asg ( Identifier "a" := Identifier "c" ) 
+                    New ( "a" = Identifier "c" ) In { 
+                        empty 
+                    } 
                 } Else { 
-                    Asg ( Identifier "b" := Identifier "c" ) 
+                    New ( "b" = Identifier "c" ) In { 
+                        empty 
+                    } 
                 } 
             } 
         } 

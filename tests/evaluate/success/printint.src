@@ -1,5 +1,5 @@
 // This tests the printint expression. This should evaluate to 1.
 main() {
-    x = 1;
-    printint $x;
+    var x = 1;
+    print $x;
 }

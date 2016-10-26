@@ -45,7 +45,7 @@ let rec exp_string e i = match e with
   | Deref e                     -> (indent i) ^ "Deref ( "                  ^ exp_string e 0    ^ ") "
   | Operator (Not, Empty, e)    -> (indent i) ^ "Operator ( Not, "          ^ exp_string e 0    ^ ") "
   | Operator (op, e, f)         -> (indent i) ^ "Operator ( "               ^ opcode_string op  ^ ", "          ^ exp_string e 0    ^ ", "  ^ exp_string f 0    ^ ") "
-  | Printint e                  -> (indent i) ^ "Printint ( "               ^ exp_string e 0    ^ ") "
+  | Print e                     -> (indent i) ^ "Print ( "                  ^ exp_string e 0    ^ ") "
   | Application (e, Seq(a,b))   -> (indent i) ^ "Application ( "            ^ exp_string e 0    ^ "( "          ^ applicationseq ( Seq (a, b) ) 0               ^ ") ) "
   | Application (e, f)          -> (indent i) ^ "Application ( "            ^ exp_string e 0    ^ "( "          ^ exp_string f 0                                ^ ") ) "
 

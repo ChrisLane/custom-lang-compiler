@@ -1,8 +1,8 @@
 // We can only use operators on matching types. This should not evaluate.
 main () {
-    x = 1 == 1;
+    var x = 1 == 1;
     x = $x + 2;
 
-    b = 0;
+    var b = 0;
     x = b +5;
 }

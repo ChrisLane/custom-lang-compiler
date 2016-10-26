@@ -1,12 +1,12 @@
 // This is the recursive bisection algorithm. This should parse.
 bisect (l, r) {
-    int mid = (r - l) / 2;
+    var mid = (r - l) / 2;
     
     if (mid >= E) {
         if (f(r) * f(mid) <= 0) {
-            l = mid;
+            var l = mid;
         } else {
-            r = mid;
+            var r = mid;
         };
         bisect(l, r);
     } else {};

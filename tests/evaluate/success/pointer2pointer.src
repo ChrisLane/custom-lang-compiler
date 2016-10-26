@@ -1,7 +1,7 @@
 // This tests dereferencing pointers to pointers. This should evaluate to 50.
 main() {
-    a = 50;
-    b = a;
+    var a = 50;
+    var b = a;
 
-    printint $$b;
+    print $$b;
 }

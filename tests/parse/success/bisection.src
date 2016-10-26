@@ -1,9 +1,9 @@
 // This is the iterative bisection algorithm. This should parse.
 bisection (f, a, b, tol, nmax) {
-    int n = 1;
+    var n = 1;
 
     while (n <= nmax) {
-        int c = a + b;
+        var c = a + b;
         c = c / 2;
 
         if (f(c) == 0 || (b - a) / 2 <= tol) {
@@ -11,11 +11,11 @@ bisection (f, a, b, tol, nmax) {
         } else {};
 
         n = n + 1;
-        
+
         if (f(c) == f(a)) {
-            a = c;
+            var a = c;
         } else {
-            b = c;
+            var b = c;
         };
     };
 }

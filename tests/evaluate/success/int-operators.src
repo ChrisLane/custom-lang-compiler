@@ -1,6 +1,6 @@
 // This tests operators that return integers. This should evaluate to 4.
 main () {
-    x = 0 + 1;
+    var x = 0 + 1;
     x = $x + (2 - 1);
     x = $x + (1 * 1);
     x = $x + (1 / 1);

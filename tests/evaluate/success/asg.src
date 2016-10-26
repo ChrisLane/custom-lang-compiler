@@ -1,5 +1,5 @@
 // This is to test the asg expression. This should evalute to 10.
 main() {
-    x = 50;
+    var x = 50;
     x = (10+20) / 3;
 }

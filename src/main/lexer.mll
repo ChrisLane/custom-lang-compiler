@@ -38,7 +38,7 @@ rule read = parse
   | '{'             { LBRACE }
   | '}'             { RBRACE }
 
-  | "int"           { TYPE }
+  | "var"           { TYPE }
 
   | ","             { PARAMSEP }
 
@@ -47,7 +47,7 @@ rule read = parse
   | "else"          { ELSE }
   | '='             { ASG }
   | "readint()"     { READINT }
-  | "printint"      { PRINTINT }
+  | "print"         { PRINT }
   | "let"           { LET }
   | "return"        { RETURN }
 

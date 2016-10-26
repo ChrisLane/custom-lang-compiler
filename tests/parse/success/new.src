@@ -1,4 +1,4 @@
 // This tests the 'new' expression. This should parse.
 main() {
-    int x = 1;
+    var x = 1;
 }
