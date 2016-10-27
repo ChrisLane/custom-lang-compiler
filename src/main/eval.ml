@@ -91,7 +91,7 @@ let rec eval_exp e env = match e with
   | Operator (op, e, f)     -> eval_operator op (eval_exp e env) (eval_exp f env)
   | Asg (Identifier x, e)   -> let v = eval_exp e env in update x v env; v
   | Seq (e, Empty)          -> eval_exp e env
-  | Seq (e, f)              -> let _ = eval_exp e env in let v2 = eval_exp f env in v2
+  | Seq (e, f)              -> ignore (eval_exp e env);  eval_exp f env
 
   | Print e -> (match eval_exp e env with
       | Int e   -> print_endline (string_of_int e); Unit
