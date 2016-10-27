@@ -1,0 +1,10 @@
+// This is to test that we can assign to a variable the result of a function. This should evaluate to 20.
+function() {
+    var y = 20;
+    return $y;
+}
+
+main() {
+    var x = function();
+    print $x;
+}
