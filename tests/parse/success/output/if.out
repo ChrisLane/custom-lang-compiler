@@ -1,3 +1,4 @@
+
 main (  ) { 
     If ( Operator ( Equal, Identifier "x" , Const 0 ) ) { 
         Deref ( Identifier "x" ) 
@@ -6,3 +7,4 @@ main (  ) {
         Deref ( Identifier "x" ) 
     } 
 }
+

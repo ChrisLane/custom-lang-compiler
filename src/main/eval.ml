@@ -1,7 +1,10 @@
 open Ast
 
-(* Hash table for storing values *)
-let store1 = Hashtbl.create 100
+(* Hash table for storing global variable values *)
+let store = Hashtbl.create 100
+
+(* Hash table for storing function definitions *)
+let functions = Hashtbl.create 100
 
 (* Evaluate operators for integer manipulation (Return Int) *)
 let eval_operator_int op e f = match op with
@@ -43,63 +46,88 @@ let eval_operator op e f = match e, f with
   | _ -> failwith "Values are of different types. Operator cannot be applied."
 
 (* Find a variable in variable storage and return it's value *)
-let rec lookup x env store = match env with
-  | []                          -> failwith "Could not find a variable during lookup."
+let rec lookup x = function
+  | []                          -> failwith "Could not find a variable and value during lookup."
   | (y, Ref z)::ys  when x = y  -> Hashtbl.find store (string_of_int z)
   | (y, z)::ys      when x = y  -> z
-  | y::ys                       -> lookup x ys store
+  | y::ys                       -> lookup x ys
+
+(* Find and return an entry in the environment *)
+let rec lookupenv x = function
+  | []                          -> failwith "Could not find a variable during environment lookup"
+  | (y, z)::ys      when x = y  -> (y, z)
+  | y::ys                       -> lookupenv x ys
 
 (* Find a variable in variable storage and update it's value *)
-let rec update x v env store = match env with
+let rec update x v = function
   | []                          -> failwith "Could not find a variable to update."
   | (y, Ref z)::ys  when x = y  -> Hashtbl.replace store (string_of_int z) v
-  | y::ys                       -> update x v ys store
+  | y::ys                       -> update x v ys
 
 (* References for variable pointers *)
 let addr_gbl = ref 0
 let newref() = addr_gbl:=!addr_gbl+1; !addr_gbl
 
 (* Evaluate an expression *)
-let rec eval_exp e env store = match e with
+let rec eval_exp e env = match e with
   | Empty           -> Unit
   | Const e         -> Int e
   | Identifier e    -> failwith "Identifier must be dereferenced."
 
   | Deref e -> (match e with
-      | Identifier f    -> lookup f env store
+      | Identifier f    -> lookup f env
       | _               -> failwith "Can only dereference an identifier.")
 
-  | While (e, f) -> (match eval_exp e env store with
-      | Bool true   -> ignore (eval_exp f env store); eval_exp (While (e, f)) env store
+  | While (e, f) -> (match eval_exp e env with
+      | Bool true   -> ignore (eval_exp f env); eval_exp (While (e, f)) env
       | Bool false  -> Unit
       | _           -> failwith "Invalid value for while condition.")
 
-  | If (e, f, g) -> (match eval_exp e env store with
-      | Bool true   -> eval_exp f env store
-      | Bool false  -> eval_exp g env store
+  | If (e, f, g) -> (match eval_exp e env with
+      | Bool true   -> eval_exp f env
+      | Bool false  -> eval_exp g env
       | _           -> failwith "Invalid value for if condition.")
 
-  | Operator (op, e, f)     -> eval_operator op (eval_exp e env store) (eval_exp f env store)
-  | Asg (Identifier x, e)   -> let v = eval_exp e env store in update x v env store; v
-  | Seq (e, Empty)          -> eval_exp e env store
-  | Seq (e, f)              -> let _ = eval_exp e env store in let v2 = eval_exp f env store in v2
+  | Operator (op, e, f)     -> eval_operator op (eval_exp e env) (eval_exp f env)
+  | Asg (Identifier x, e)   -> let v = eval_exp e env in update x v env; v
+  | Seq (e, Empty)          -> eval_exp e env
+  | Seq (e, f)              -> let _ = eval_exp e env in let v2 = eval_exp f env in v2
 
-  | Print e -> (match eval_exp e env store with
+  | Print e -> (match eval_exp e env with
       | Int e   -> print_endline (string_of_int e); Unit
       | Bool e  -> print_endline (string_of_bool e); Unit
       | Var e   -> print_endline e; Unit
       | _       -> failwith "Printint can only print integers.")
 
-  | Application _   -> failwith "Application evaluation not supported."
-  | Readint         -> failwith "Readint evaluation not supported."
-  | Let (x, e1, e2) -> let v1 = eval_exp e1 env store in eval_exp e2 ((x, v1)::env) store
-  | New (x, e1, e2) ->
-    let v1 = eval_exp e1 env store in
+  | Application (Identifier n, e) ->
+    if Hashtbl.mem functions n
+    then
+      let args = list_args e in
+      (match Hashtbl.find functions n with
+        | Fundef (name, _, body) -> eval_function env (Fundef (name, args, body)))
+    else
+      failwith "No such function."
+
+  | Readint                 -> failwith "Readint evaluation not supported."
+  | Let (x, e1, e2)         -> let v1 = eval_exp e1 env in eval_exp e2 ((x, v1)::env)
+  | New (x, e1, e2)         ->
+    let v1 = eval_exp e1 env in
     let l = newref() in
-    let v2 = Hashtbl.add store (string_of_int l) v1;        eval_exp e2 ((x, Ref l)::env) store in
-             Hashtbl.remove store (string_of_int l);        v2
-  | _               -> failwith "Cannot evaluate unsupported expression."
+    let v2 = Hashtbl.add store (string_of_int l) v1;    eval_exp e2 ((x, Ref l)::env) in
+    Hashtbl.remove store (string_of_int l);             v2
+
+  | _                       -> failwith "Cannot evaluate unsupported expression."
+
+(* Produce a string list of application arguements for function evaluation *)
+and addargs env = function
+  | []      -> []
+  | x::xs   -> (lookupenv x env)::(addargs env xs)
 
 (* Evaluate a function *)
-let eval_function = function
-  | (name, args, body) -> eval_exp body [] store1
+and eval_function env = function
+  | Fundef (name, args, body) -> eval_exp body (addargs env args)
+
+(* Evaluate a program *)
+let eval_program = function
+  | Fundef ("main", args, body) -> eval_exp body []
+  | Fundef (name, args, body)   -> Hashtbl.add functions name (Fundef (name, args, body)); Unit

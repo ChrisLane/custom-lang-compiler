@@ -19,3 +19,7 @@ bisection (f, a, b, tol, nmax) {
         };
     };
 }
+
+main() {
+    bisection();
+}

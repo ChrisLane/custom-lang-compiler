@@ -11,6 +11,8 @@
 (* Formatting *)
 %token              LPAREN RPAREN SEMICOLON LBRACE RBRACE PARAMSEP
 %token              EOF
+(* Specific Strings *)
+%token  <string>    MAIN
 
 (* Associativity and Precedence *)
 %right              ASG
@@ -33,23 +35,27 @@
 
 (* Match overall program *)
 program:
-  | f = fundef*; EOF    { f };;
+  | f = fundef*; m = main; EOF      { f@[m] }
 
-(* Match the function *)
+(* Match the main function *)
+main:
+  | n = MAIN; p = funparams; b = bracedbody     { Fundef (n, p, b) }
+
+(* Match a function *)
 fundef:
-  | n = NAME; p = funparams; b = bracedbody    { (n, p, b) };;
+  | n = NAME; p = funparams; b = bracedbody     { Fundef (n, p, b) }
 
 (* Match the function parameters *)
 funparams:
-  | LPAREN; p = separated_list (PARAMSEP, NAME); RPAREN     { p };;
+  | LPAREN; p = separated_list (PARAMSEP, NAME); RPAREN     { p }
 
 (* Match any number of bodies between braces*)
 bracedbody:
-  | LBRACE; e = body*; s = set* RBRACE    { make_seq (e@s)  };;
+  | LBRACE; e = body*; s = set* RBRACE      { make_seq (e@s) }
 
 (* Match an expression in a body *)
 body:
-  | e = exp SEMICOLON { e };;
+  | e = exp SEMICOLON       { e }
 
 (* Match expressions *)
 exp:
@@ -63,22 +69,22 @@ exp:
   | IF;         p = params;     e = bracedbody;     ELSE;   f = bracedbody  { If (p, e, f) }
   | WHILE;      p = params;     e = bracedbody                              { While (p, e) }
   | RETURN;     e = exp                                                     { e }
-  | DEREF;      e = exp;                                                    { Deref e }
-  | READINT;                                                                { Readint }
-  | PRINT;      e = exp                                                     { Print e };;
+  | DEREF;      e = exp                                                     { Deref e }
+  | READINT                                                                 { Readint }
+  | PRINT;      e = exp                                                     { Print e }
 
 (* Match variable setting expressions with bodies *)
 set:
   | TYPE;   s = NAME; ASG; e = exp; SEMICOLON;  f = body*; g = set*     { New (s, e, make_seq (f@g)) }
-  | LET;    s = NAME; ASG; e = exp; f = bracedbody SEMICOLON            { Let (s, e, f) };;
+  | LET;    s = NAME; ASG; e = exp; f = bracedbody SEMICOLON            { Let (s, e, f) }
 
 (* Match an expression within parentheses *)
 params:
-  | LPAREN; e = exp; RPAREN; { e };;
+  | LPAREN; e = exp; RPAREN     { e }
 
 (* Match many parameters between parentheses *)
 paramlist:
-  | LPAREN; e = separated_list(PARAMSEP, exp); RPAREN;  { make_seq e };;
+  | LPAREN; e = separated_list(PARAMSEP, exp); RPAREN       { make_seq e }
 
 (* Match all operators *)
 %inline operator:

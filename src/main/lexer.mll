@@ -5,7 +5,8 @@ exception SyntaxError of string
 
 (* Regex *)
 let int = ['0'-'9'] ['0'-'9']*
-let name = ['a'-'z' 'A'-'Z'] ['a'-'z' 'A'-'Z' '0'-'9']*
+let name = ['a'-'z'] ['a'-'z' 'A'-'Z' '0'-'9']*
+let main = "main"
 let white = [' ' '\t']+
 let newline = '\r' | '\n' | "\r\n"
 let comment = "//"[^'\r' '\n']* newline (* // Line comments in this form *)
@@ -51,6 +52,7 @@ rule read = parse
   | "let"           { LET }
   | "return"        { RETURN }
 
+  | main            { MAIN (Lexing.lexeme lexbuf) }
   | name            { NAME (Lexing.lexeme lexbuf) }
   | eof             { EOF }
   | _               { raise (SyntaxError ("Unexpected char: " ^ Lexing.lexeme lexbuf)) } (* Failed to match. Raise an error.*)

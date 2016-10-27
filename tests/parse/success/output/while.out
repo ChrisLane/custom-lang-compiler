@@ -1,5 +1,7 @@
+
 main (  ) { 
     While ( Operator ( Equal, Identifier "a" , Const 2 ) ) { 
         Asg ( Identifier "a" := Operator ( Plus, Identifier "a" , Const 1 ) ) 
     } 
 }
+

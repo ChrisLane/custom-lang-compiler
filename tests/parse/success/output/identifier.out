@@ -1,3 +1,5 @@
+
 main (  ) { 
     Asg ( Identifier "identifier" := Const 10 ) 
 }
+

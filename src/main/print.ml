@@ -46,7 +46,7 @@ let rec exp_string e i = match e with
   | Operator (Not, Empty, e)    -> (indent i) ^ "Operator ( Not, "          ^ exp_string e 0    ^ ") "
   | Operator (op, e, f)         -> (indent i) ^ "Operator ( "               ^ opcode_string op  ^ ", "          ^ exp_string e 0    ^ ", "  ^ exp_string f 0    ^ ") "
   | Print e                     -> (indent i) ^ "Print ( "                  ^ exp_string e 0    ^ ") "
-  | Application (e, Seq(a,b))   -> (indent i) ^ "Application ( "            ^ exp_string e 0    ^ "( "          ^ applicationseq ( Seq (a, b) ) 0               ^ ") ) "
+  | Application (e, Seq (a, b)) -> (indent i) ^ "Application ( "            ^ exp_string e 0    ^ "( "          ^ applicationseq ( Seq (a, b) ) 0               ^ ") ) "
   | Application (e, f)          -> (indent i) ^ "Application ( "            ^ exp_string e 0    ^ "( "          ^ exp_string f 0                                ^ ") ) "
 
 (* Seperate string rule for the Seq expression within application parameters.
@@ -57,14 +57,14 @@ and applicationseq e i = match e with
 
 (* Return the string of a function *)
 let function_string = function
-  | (name, args, body) -> name ^ " ( " ^ (String.concat ", " args)  ^ " ) { \n" ^ exp_string body 1 ^ "\n}"
+  | Fundef (name, args, body) -> "\n" ^ name ^ " ( " ^ (String.concat ", " args)  ^ " ) { \n" ^ exp_string body 1 ^ "\n}\n"
 
 (* Parse and then print if successful *)
 let parse_file filename = open_in filename
                           |> Lexing.from_channel
                           |> Error.parse_with_error
                           |> List.map function_string
-                          |> String.concat " "
+                          |> String.concat ""
                           |> print_string
                           |> print_newline
 
@@ -72,8 +72,8 @@ let parse_file filename = open_in filename
 let eval_file filename = open_in filename
                          |> Lexing.from_channel
                          |> Error.parse_with_error
-                         |> List.map Eval.eval_function
+                         |> List.map Eval.eval_program
                          |> List.map dtype_string
-                         |> String.concat " "
+                         |> String.concat ""
                          |> print_string
                          |> print_newline

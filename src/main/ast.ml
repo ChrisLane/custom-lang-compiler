@@ -30,7 +30,7 @@ type expression =
   | New of              string * expression * expression        (* new x = e in e *)
 
 (* Function *)
-type fundef = string * string list * expression
+type fundef = Fundef of string * string list * expression
 
 (* Program *)
 type program = fundef list
@@ -40,3 +40,10 @@ let rec make_seq = function
   | [] -> Empty
   | [x] -> x
   | x :: xs -> Seq (x, make_seq xs)
+
+(* Convert a Seq expression to a list *)
+let rec list_args = function
+  | Empty                   -> []
+  | Identifier e            -> [e]
+  | Seq (Identifier e, f)   -> e::(list_args f)
+  | _                       -> failwith "Bad input for args as list."

@@ -1,3 +1,4 @@
+
 bisection ( f, a, b, tol, nmax ) { 
     New ( "n" = Const 1 ) In { 
         While ( Operator ( Leq, Identifier "n" , Identifier "nmax" ) ) { 
@@ -22,3 +23,8 @@ bisection ( f, a, b, tol, nmax ) {
         } 
     } 
 }
+
+main (  ) { 
+    Application ( Identifier "bisection" ( empty ) ) 
+}
+

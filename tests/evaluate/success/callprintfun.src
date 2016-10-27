@@ -1,0 +1,10 @@
+// This is to test the evaluation of calling a function with arguements that are then used in the arguement. This should output 0, 10, 100, 3, 0 on new lines.
+print123() { print $a; print $b; print 3; }
+
+main() {
+    print 0;
+    var a = 10;
+    var b = $a * $a;
+    print123(a, b);
+    print 0;
+}

@@ -1,0 +1,11 @@
+// This is to test the evaluation of calling another function. This should evaluate to 20.
+fun2() {
+    var y = 20;
+    print $y;
+}
+
+main() {
+    var x = 10;
+
+    fun2();
+}

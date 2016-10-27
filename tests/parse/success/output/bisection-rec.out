@@ -1,6 +1,7 @@
+
 bisect ( l, r ) { 
     New ( "mid" = Operator ( Divide, Operator ( Minus, Identifier "r" , Identifier "l" ) , Const 2 ) ) In { 
-        If ( Operator ( Geq, Identifier "mid" , Identifier "E" ) ) { 
+        If ( Operator ( Geq, Identifier "mid" , Identifier "e" ) ) { 
             If ( Operator ( Leq, Operator ( Times, Application ( Identifier "f" ( Identifier "r" ) ) , Application ( Identifier "f" ( Identifier "mid" ) ) ) , Const 0 ) ) { 
                 New ( "l" = Identifier "mid" ) In { 
                     empty 
@@ -17,3 +18,8 @@ bisect ( l, r ) {
         Deref ( Identifier "mid" ) 
     } 
 }
+
+main (  ) { 
+    Application ( Identifier "bisect" ( empty ) ) 
+}
+

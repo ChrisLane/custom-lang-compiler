@@ -1,3 +1,4 @@
+
 main (  ) { 
     Asg ( Identifier "x" := Operator ( Plus, Identifier "a" , Identifier "b" ) ) ; 
     Asg ( Identifier "x" := Operator ( Minus, Identifier "a" , Identifier "b" ) ) ; 
@@ -11,3 +12,4 @@ main (  ) {
     Asg ( Identifier "x" := Operator ( Or, Identifier "a" , Identifier "b" ) ) ; 
     Asg ( Identifier "x" := Operator ( Not, Operator ( Or, Identifier "a" , Identifier "b" ) ) ) 
 }
+
