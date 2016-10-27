@@ -20,8 +20,8 @@ Once these are installed, run the `make` command in the main directory. If succe
 Running the ./main binary on its own will output available tasks.
 
 Current Tasks (./main \<task> \<filename>):
-parse -     This will parse the source file and output the parsed structure.
-evaluate -  This will evaluate the source file and return an output for the function.
+ * parse -      This will parse the source file and output the parsed structure.
+ * evaluate -   This will evaluate the source file and return an output for the function.
 
 Example run: `./main parse mysourcefile.src`
 
