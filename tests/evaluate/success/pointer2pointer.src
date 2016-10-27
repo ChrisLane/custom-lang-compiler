@@ -2,6 +2,7 @@
 main() {
     var a = 50;
     var b = a;
+    var c = b;
 
-    print $$b;
+    print $$$c;
 }

@@ -72,11 +72,11 @@ let newref() = addr_gbl:=!addr_gbl+1; !addr_gbl
 let rec eval_exp e env = match e with
   | Empty           -> Unit
   | Const e         -> Int e
-  | Identifier e    -> failwith "Identifier must be dereferenced."
+  | Identifier e    -> Var e
 
-  | Deref e -> (match e with
-      | Identifier f    -> lookup f env
-      | _               -> failwith "Can only dereference an identifier.")
+  | Deref e -> (match eval_exp e env with
+      | Var f   -> lookup f env
+      | _       -> failwith "Can only dereference a variable.")
 
   | While (e, f) -> (match eval_exp e env with
       | Bool true   -> ignore (eval_exp f env); eval_exp (While (e, f)) env
