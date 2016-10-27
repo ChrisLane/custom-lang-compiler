@@ -7,8 +7,6 @@ addons:
             - avsm
         packages:
             - ocaml
-            - ocaml-native-compilers
-            - camlp4-extra
             - opam
 env:
     - OPAMYES=1 OPAMVERBOSE=1
