@@ -1,0 +1,7 @@
+main() {
+    print 1;
+}
+
+fun2() {
+    print 2;
+}

@@ -1,0 +1,10 @@
+// This is to test that we cannot try to access variables that don't exist from called functions.
+called() {
+    print $a;
+}
+
+main() {
+    var x = 10;
+
+    called(a);
+}

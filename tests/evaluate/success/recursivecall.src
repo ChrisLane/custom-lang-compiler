@@ -1,0 +1,13 @@
+// This is to test that we are able to recursively call functions.
+recursive() {
+    if ($a >= 0) {
+        print $a;
+        a = $a - 1;
+        recursive(a);
+    } else {};
+}
+
+main() {
+    var a = 5;
+    recursive(a);
+}

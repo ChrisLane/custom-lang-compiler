@@ -1,0 +1,6 @@
+// This is to test that we cannot change the value of a let variable. This should not evaluate.
+main() {
+    let x = 50 {
+        x = 10;
+    };
+}

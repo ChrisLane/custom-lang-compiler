@@ -1,0 +1,6 @@
+// This is to test that we cannot call functions that don't exist. This will not evaluate.
+realfunction() {}
+
+main() {
+    wrongfunction();
+}
