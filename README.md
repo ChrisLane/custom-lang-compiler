@@ -8,6 +8,7 @@ Implementing a compiler.
 ### Build
 Please install the following:
 * Make
+* Ocaml
 * Opam
 * Ocamlbuild (`$ opam install ocamlbuild`)
 * Ocamlfind (`$ opam install ocamlfind`)
@@ -91,11 +92,11 @@ Supported types are listed:
    * ! - Unimplemented
  * While - Returns a Unit type.
  * If - Returns the first body section if the condition is true, else it returns the second body section.
- * Assign - Returns a Unit type.
- * Return - Returns the type of the arguement expression.
+ * Assign - Returns the type of the value assigned.
+ * Return - Returns the type of the argument expression.
  * Printint - Returns a Unit type.
  * Deref - Returns an integer.
- * Application - Unimplemented.
+ * Application - Returns the result of a function.
  * Readint - Unimplemented.
- * Let - Unimplemented.
- * New - Unimplemented.
+ * Let - Returns a Unit type.
+ * New - Returns a Unit type.
