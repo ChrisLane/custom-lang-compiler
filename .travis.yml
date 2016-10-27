@@ -1,5 +1,23 @@
 language: c
+cache: apt
 sudo: required
-script: bash -ex .travis-ci.sh
+addons:
+    apt:
+        sources:
+            - avsm
+        packages:
+            - ocaml
+            - ocaml-native-compilers
+            - camlp4-extra
+            - opam
 env:
-    - OCAML_VERSION=4.02.3 OPAM_VERSION=1.2.2
+    - OPAMYES=1 OPAMVERBOSE=1
+before-install:
+    - ocaml -version
+    - opam --version
+install:
+    - opam init
+    - opam install ocamlfind menhir
+    - eval `opam config env`
+script:
+    - make test
