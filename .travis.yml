@@ -1,6 +1,6 @@
 language: generic
-cache: apt
-sudo: required
+cache:
+    apt: true
 addons:
     apt:
         sources:
@@ -10,7 +10,7 @@ addons:
             - opam
 env:
     - OPAMYES=1 OPAMVERBOSE=1
-before-install:
+before_install:
     - ocaml -version
     - opam --version
 install:
