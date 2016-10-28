@@ -1,0 +1,20 @@
+function1() {
+    if ($x >=1) {
+        print $x;
+        x = $x - 1;
+        function2(x);
+    } else {};
+}
+
+function2() {
+    if ($x >=1) {
+        print $x;
+        x = $x - 1;
+        function1(x);
+    } else {};
+}
+
+main() {
+    var x = 5;
+    function1(x);
+}
