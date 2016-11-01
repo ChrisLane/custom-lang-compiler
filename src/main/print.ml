@@ -37,6 +37,7 @@ let rec exp_string e i = match e with
   | Readint                     -> (indent i) ^ "Readint () "
   | Identifier s                -> (indent i) ^ "Identifier \"" ^ s ^ "\" "
   | Const n                     -> (indent i) ^ "Const "                    ^ string_of_int n   ^ " "
+  | Bool n                      -> (indent i) ^ "Bool "                     ^ string_of_bool n  ^ " "
   | If (e, f, g)                -> (indent i) ^ "If ( "                     ^ exp_string e 0    ^ ") { \n"      ^ exp_string f (i+1) ^ "\n" ^ indent i          ^ "} Else { \n" ^ exp_string g (i+1) ^ "\n" ^ indent i ^ "} "
   | While (e, f)                -> (indent i) ^ "While ( "                  ^ exp_string e 0    ^ ") { \n"      ^ exp_string f (i+1) ^ "\n" ^ indent i          ^ "} "
   | Let (s, e, f)               -> (indent i) ^ "Let ( \"" ^ s ^ "\" = "    ^ exp_string e 0    ^ ") In { \n"   ^ exp_string f (i+1) ^ "\n" ^ indent i          ^ "} "
@@ -68,10 +69,32 @@ let parse_file filename = open_in filename
                           |> print_string
                           |> print_newline
 
+(* Parse, optimise and then print if successful *)
+let parse_file_optimised filename = open_in filename
+                          |> Lexing.from_channel
+                          |> Error.parse_with_error
+                          |> List.map Optim.optim_program
+                          |> List.map function_string
+                          |> String.concat ""
+                          |> print_string
+                          |> print_newline
+
+
 (* Parse, evaluate and print a return value if successful *)
 let eval_file filename = open_in filename
                          |> Lexing.from_channel
                          |> Error.parse_with_error
+                         |> List.map Eval.eval_program
+                         |> List.map dtype_string
+                         |> String.concat ""
+                         |> print_string
+                         |> print_newline
+
+(* Parse, optimise, evaluate and print a return value if successful *)
+let eval_file_optimised filename = open_in filename
+                         |> Lexing.from_channel
+                         |> Error.parse_with_error
+                         |> List.map Optim.optim_program
                          |> List.map Eval.eval_program
                          |> List.map dtype_string
                          |> String.concat ""

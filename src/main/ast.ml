@@ -23,6 +23,7 @@ type expression =
   | Operator of         opcode * expression * expression        (* e + e *)
   | Application of      expression * expression                 (* e(e) *)
   | Const of            int                                     (* 7 *)
+  | Bool of             bool                                    (* true *)
   | Readint                                                     (* read_int () *)
   | Print of            expression                              (* print_int (e) *)
   | Identifier of       string                                  (* x *)

@@ -1,0 +1,7 @@
+
+main (  ) { 
+    New ( "x" = Operator ( Plus, Const 10 , Const 10 ) ) In { 
+        Asg ( Identifier "x" := Operator ( Times, Const 20 , Const 10 ) ) 
+    } 
+}
+

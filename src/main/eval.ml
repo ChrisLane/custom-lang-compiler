@@ -72,6 +72,7 @@ let newref() = addr_gbl:=!addr_gbl+1; !addr_gbl
 let rec eval_exp e env = match e with
   | Empty           -> Unit
   | Const e         -> Int e
+  | Bool e          -> Bool e
   | Identifier e    -> Var e
 
   | Deref e -> (match eval_exp e env with
