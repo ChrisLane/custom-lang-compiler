@@ -1,9 +1,13 @@
 (* Print command usage information *)
 let print_help () =
-  print_endline ("\nPlease use: './main <task> <file>'\n");
-  print_endline ("Available tasks:");
-  print_endline ("\tparse - Parse a source file");
-  print_endline ("\tevaluate - Evaluate a source file");
+  print_endline ("\n============================================");
+  print_endline ("Please use: './main <task> <flag> <file>'\n");
+  print_endline ("Available flags:");
+  print_endline ("\t '-o' - Optimise the parsed program.");
+  print_endline ("\nAvailable tasks:");
+  print_endline ("\t'parse' - Parse a source file.");
+  print_endline ("\t'evaluate' - Evaluate a source file.");
+  print_endline ("============================================");
   print_endline ""
 
 (* Run the appropriate command *)
