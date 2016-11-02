@@ -5,6 +5,7 @@ exception SyntaxError of string
 
 (* Regex *)
 let int = ['0'-'9'] ['0'-'9']*
+let bool = "true" | "false"
 let name = ['a'-'z'] ['a'-'z' 'A'-'Z' '0'-'9']*
 let main = "main"
 let white = [' ' '\t']+
@@ -18,6 +19,7 @@ rule read = parse
   | newline         { Lexing.new_line lexbuf; read lexbuf } (* Skip any new lines*)
 
   | int             { INT (int_of_string (Lexing.lexeme lexbuf)) }
+  | bool            { BOOL (bool_of_string (Lexing.lexeme lexbuf)) }
 
   | '+'             { PLUS }
   | '-'             { MINUS }

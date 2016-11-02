@@ -1,6 +1,7 @@
 %{ open Ast %}
 (* Basic Types *)
 %token  <int>       INT
+%token  <bool>      BOOL
 %token  <string>    NAME
 (* Operators *)
 %token              PLUS MINUS TIMES DIVIDE
@@ -61,6 +62,7 @@ body:
 exp:
   | e = params                                                              { e }
   | e = INT                                                                 { Const e }
+  | e = BOOL                                                                { Bool e }
   | e = NAME                                                                { Identifier e }
   | e = exp;    p = paramlist                                               { Application (e, p) }
   | e = exp;    o = operator;   f = exp                                     { Operator (o, e, f) }
