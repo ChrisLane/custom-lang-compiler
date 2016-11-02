@@ -1,0 +1,7 @@
+
+main (  ) { 
+    New ( "x" = Const 2 ) In { 
+        Asg ( Identifier "x" := Const 3 ) 
+    } 
+}
+

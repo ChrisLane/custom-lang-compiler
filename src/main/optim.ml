@@ -41,14 +41,19 @@ let rec optim_exp = function
   | If (e, f, g) -> (match optim_exp e with
     | Bool true  -> optim_exp f
     | Bool false -> optim_exp g
-    | _     -> print_endline "fuck"; If (e, f, g))
+    | _     -> If (optim_exp e, optim_exp f, optim_exp g))
   | Operator (op, e, f) -> optim_operator op e f
   | Asg (e, f) -> Asg (optim_exp e, optim_exp f)
   | Seq (e, f) -> Seq (optim_exp e, optim_exp f)
   | Print e -> Print (optim_exp e)
   | Application (e, f) -> Application (optim_exp e, optim_exp f)
   | Let (x, e, f) -> Let (x, optim_exp e, optim_exp f)
-  | New (x, e, f) -> New (x, optim_exp e, optim_exp f)
+  | New (x, e, Seq (f, g)) -> (match optim_exp f with
+      | Asg (y, h) when Identifier x = y -> (match optim_exp h with
+        | Const i -> New (x, Const i, optim_exp g)
+        | Bool i -> New (x, Bool i, optim_exp g)
+        | _ -> New (x, e, Seq (f, g)))
+      | _ -> New (x, optim_exp e, Seq (optim_exp f, optim_exp g)))
   | e -> e
 
 let optim_program = function

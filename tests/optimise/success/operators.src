@@ -1,0 +1,19 @@
+// This test should reduce operators with basic data types to their end value.
+main() {
+    var x = 1 + 1;
+    x; // Don't optimise new
+    x = 1 - 1;
+    x = 1 * 1;
+    x = 1 / 1;
+
+    var y = 1 <= 1;
+    y; // Don't optimise new
+    y = 1 >= 1;
+    y = 1 == 1;
+    y = 1 != 1;
+
+    var z = true && true;
+    z; // Don't optimise new
+    z = true || true;
+    z = !true;
+}

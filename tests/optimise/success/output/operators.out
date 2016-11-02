@@ -1,0 +1,21 @@
+
+main (  ) { 
+    New ( "x" = Const 2 ) In { 
+        Identifier "x" ; 
+        Asg ( Identifier "x" := Const 0 ) ; 
+        Asg ( Identifier "x" := Const 1 ) ; 
+        Asg ( Identifier "x" := Const 1 ) ; 
+        New ( "y" = Bool true ) In { 
+            Identifier "y" ; 
+            Asg ( Identifier "y" := Bool true ) ; 
+            Asg ( Identifier "y" := Bool true ) ; 
+            Asg ( Identifier "y" := Bool false ) ; 
+            New ( "z" = Bool true ) In { 
+                Identifier "z" ; 
+                Asg ( Identifier "z" := Bool true ) ; 
+                Asg ( Identifier "z" := Bool false ) 
+            } 
+        } 
+    } 
+}
+
