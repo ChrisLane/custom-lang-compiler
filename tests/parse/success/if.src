@@ -1,6 +1,7 @@
 // This tests the 'if' expression. This should parse.
 main() {
-    if (x==0) {
+    var x = 10;
+    if (0==0) {
         return $x;
     } else {
         x = x+1;

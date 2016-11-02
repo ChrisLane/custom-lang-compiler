@@ -38,7 +38,10 @@ let rec optim_exp = function
   | Identifier e -> Identifier e
   | Deref e -> Deref (optim_exp e)
   | While (e, f) -> While (optim_exp e, optim_exp f)
-  | If (e, f, g) -> If (optim_exp e, optim_exp f, optim_exp g)
+  | If (e, f, g) -> (match optim_exp e with
+    | Bool true  -> optim_exp f
+    | Bool false -> optim_exp g
+    | _     -> print_endline "fuck"; If (e, f, g))
   | Operator (op, e, f) -> optim_operator op e f
   | Asg (e, f) -> Asg (optim_exp e, optim_exp f)
   | Seq (e, f) -> Seq (optim_exp e, optim_exp f)
