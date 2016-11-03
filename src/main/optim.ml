@@ -1,4 +1,7 @@
 open Ast
+open Hashtbl
+
+let store = create 100
 
 let optim_operator_const e f = function
   | Plus    -> e + f
@@ -32,29 +35,61 @@ let optim_operator op e f = match e, f with
       | _   -> failwith "Operator must be of type not.")
   | _ -> Operator (op, e, f)
 
-let rec optim_exp = function
-  | Empty -> Empty
-  | Const e -> Const e
-  | Identifier e -> Identifier e
-  | Deref e -> Deref (optim_exp e)
-  | While (e, f) -> While (optim_exp e, optim_exp f)
-  | If (e, f, g) -> (match optim_exp e with
-    | Bool true  -> optim_exp f
-    | Bool false -> optim_exp g
-    | _     -> If (optim_exp e, optim_exp f, optim_exp g))
-  | Operator (op, e, f) -> optim_operator op e f
-  | Asg (e, f) -> Asg (optim_exp e, optim_exp f)
-  | Seq (e, f) -> Seq (optim_exp e, optim_exp f)
-  | Print e -> Print (optim_exp e)
-  | Application (e, f) -> Application (optim_exp e, optim_exp f)
-  | Let (x, e, f) -> Let (x, optim_exp e, optim_exp f)
-  | New (x, e, Seq (f, g)) -> (match optim_exp f with
-      | Asg (y, h) when Identifier x = y -> (match optim_exp h with
-        | Const i -> New (x, Const i, optim_exp g)
-        | Bool i -> New (x, Bool i, optim_exp g)
-        | _ -> New (x, e, Seq (f, g)))
-      | _ -> New (x, optim_exp e, Seq (optim_exp f, optim_exp g)))
-  | e -> e
+(* Find a variable in variable storage and return it's value *)
+let rec lookup x = function
+  | []                          -> Unit
+  | (y, Ref z)::_  when x = y   -> find store (string_of_int z)
+  | (y, z)::_      when x = y   -> z
+  | _::ys                       -> lookup x ys
 
-let optim_program = function
-  | Fundef (name, args, body) -> Fundef (name, args, (optim_exp body))
+(* References for variable pointers *)
+let addr_gbl = ref 0
+let newref() = addr_gbl:=!addr_gbl+1; !addr_gbl
+
+let rec optim_exp env = function
+  | Empty                   -> Empty
+  | Const e                 -> Const e
+
+  | Identifier e            -> (match lookup e env with
+    | Unit      -> Identifier e
+    | Int f     -> Const f
+    | Bool f    -> Bool f
+    | Var f     -> Identifier f
+    | _         -> failwith "balls")
+
+  | Deref e                 -> Deref (optim_exp env e)
+
+  | While (e, f)            -> (match optim_exp env e with
+      | Bool false  -> Empty
+      | Bool true   -> optim_exp env (Seq (f, e))
+      | n           -> While (n, optim_exp env f))
+
+  | If (e, f, g)            -> (match optim_exp env e with
+      | Bool true     -> optim_exp env f
+      | Bool false    -> optim_exp env g
+      | n             -> If (n, optim_exp env f, optim_exp env g))
+
+  | Operator (op, e, f)     -> optim_operator op (optim_exp env e) (optim_exp env f)
+  | Asg (e, f)              -> let v = optim_exp env f in (*update e v env;*) Asg (e, v)
+  | Seq (e, Empty)          -> optim_exp env e
+  | Seq (e, f)              -> Seq (optim_exp env e, optim_exp env f)
+  | Print e                 -> Print (optim_exp env e)
+  | Application (e, f)      -> Application (optim_exp env e, optim_exp env f)
+  | Let (x, e, f)           -> Let (x, optim_exp env e, optim_exp env f)
+
+  | New (x, e, Seq (f, g))  -> let l = newref() in (match f with
+      | Asg (y, h) when Identifier x = y    -> (match optim_exp env h with
+          | Const i   ->
+            let v2 = add store (string_of_int l) (Int i);     optim_exp ((x, Ref l)::env) g in
+            remove store (string_of_int l);                     New (x, Const i, v2)
+          | Bool i    ->
+            let v2 = add store (string_of_int l) (Bool i);      optim_exp ((x, Ref l)::env) g in
+            remove store (string_of_int l);                     New (x, Bool i, v2)
+          | _         -> New (x, optim_exp env e, Seq (optim_exp env f, optim_exp env g)))
+      | _   -> New (x, optim_exp env e, Seq (optim_exp env f, optim_exp env g)))
+
+  | e                       -> e
+
+let rec optim_program = function
+  | [] -> []
+  | Fundef (name, args, body)::ys -> Fundef (name, args, (optim_exp [] body))::optim_program ys

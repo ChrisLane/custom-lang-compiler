@@ -73,7 +73,7 @@ let parse_file filename = open_in filename
 let parse_file_optimised filename = open_in filename
                           |> Lexing.from_channel
                           |> Error.parse_with_error
-                          |> List.map Optim.optim_program
+                          |> Optim.optim_program
                           |> List.map function_string
                           |> String.concat ""
                           |> print_string
@@ -94,7 +94,7 @@ let eval_file filename = open_in filename
 let eval_file_optimised filename = open_in filename
                          |> Lexing.from_channel
                          |> Error.parse_with_error
-                         |> List.map Optim.optim_program
+                         |> Optim.optim_program
                          |> List.map Eval.eval_program
                          |> List.map dtype_string
                          |> String.concat ""
