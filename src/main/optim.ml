@@ -131,4 +131,5 @@ let rec optim_exp env = function
 (* Optimise a function *)
 let rec optim_program = function
   | [] -> []
-  | Fundef (name, args, body)::ys -> Fundef (name, args, (optim_exp [] body))::optim_program ys
+  | Fundef ("main", args, body)::ys -> Fundef ("main", args, (optim_exp [] body))::optim_program ys
+  | f                               -> f
