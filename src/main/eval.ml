@@ -30,17 +30,17 @@ let eval_operator_bool op e f = match op with
 
 (* Choose correct operator evaluation depending on types *)
 let eval_operator op e f = match e, f with
-  | Int e, Int f -> (match op with
-      | Plus | Minus | Times | Divide   -> Int (eval_operator_int op e f)
-      | Leq  | Geq   | Equal | Noteq    -> Bool (eval_operator_compare op e f)
+  | DInt e, DInt f -> (match op with
+      | Plus | Minus | Times | Divide   -> DInt (eval_operator_int op e f)
+      | Leq  | Geq   | Equal | Noteq    -> DBool (eval_operator_compare op e f)
       | _                               -> failwith "Operator cannot be applied to integers.")
 
-  | Bool e, Bool f -> (match op with
-      | And | Or    -> Bool (eval_operator_bool op e f)
+  | DBool e, DBool f -> (match op with
+      | And | Or    -> DBool (eval_operator_bool op e f)
       | _           -> failwith "Operator cannot be applied to booleans.")
 
-  | e, Bool f -> (match op with
-      | Not -> Bool (not f)
+  | e, DBool f -> (match op with
+      | Not -> DBool (not f)
       | _   -> failwith "Operator must be of type not.")
 
   | _ -> failwith "Values are of different types. Operator cannot be applied."
@@ -48,7 +48,7 @@ let eval_operator op e f = match e, f with
 (* Find a variable in variable storage and return it's value *)
 let rec lookup x = function
   | []                          -> failwith "Could not find a variable and value during lookup."
-  | (y, Ref z)::ys  when x = y  -> Hashtbl.find store (string_of_int z)
+  | (y, DRef z)::ys  when x = y  -> Hashtbl.find store (string_of_int z)
   | (y, z)::ys      when x = y  -> z
   | y::ys                       -> lookup x ys
 
@@ -61,7 +61,7 @@ let rec lookupenv x = function
 (* Find a variable in variable storage and update it's value *)
 let rec update x v = function
   | []                          -> failwith "Could not find a variable to update."
-  | (y, Ref z)::ys  when x = y  -> Hashtbl.replace store (string_of_int z) v
+  | (y, DRef z)::ys  when x = y  -> Hashtbl.replace store (string_of_int z) v
   | y::ys                       -> update x v ys
 
 (* References for variable pointers *)
@@ -70,23 +70,23 @@ let newref() = addr_gbl:=!addr_gbl+1; !addr_gbl
 
 (* Evaluate an expression *)
 let rec eval_exp e env = match e with
-  | Empty           -> Unit
-  | Const e         -> Int e
-  | Bool e          -> Bool e
-  | Identifier e    -> Var e
+  | Empty           -> DUnit
+  | Const e         -> DInt e
+  | Bool e          -> DBool e
+  | Identifier e    -> DVar e
 
   | Deref e -> (match eval_exp e env with
-      | Var f   -> lookup f env
+      | DVar f   -> lookup f env
       | _       -> failwith "Can only dereference a variable.")
 
   | While (e, f) -> (match eval_exp e env with
-      | Bool true   -> ignore (eval_exp f env); eval_exp (While (e, f)) env
-      | Bool false  -> Unit
+      | DBool true   -> ignore (eval_exp f env); eval_exp (While (e, f)) env
+      | DBool false  -> DUnit
       | _           -> failwith "Invalid value for while condition.")
 
   | If (e, f, g) -> (match eval_exp e env with
-      | Bool true   -> eval_exp f env
-      | Bool false  -> eval_exp g env
+      | DBool true   -> eval_exp f env
+      | DBool false  -> eval_exp g env
       | _           -> failwith "Invalid value for if condition.")
 
   | Operator (op, e, f)     -> eval_operator op (eval_exp e env) (eval_exp f env)
@@ -95,9 +95,9 @@ let rec eval_exp e env = match e with
   | Seq (e, f)              -> ignore (eval_exp e env);  eval_exp f env
 
   | Print e -> (match eval_exp e env with
-      | Int e   -> print_endline (string_of_int e); Unit
-      | Bool e  -> print_endline (string_of_bool e); Unit
-      | Var e   -> print_endline e; Unit
+      | DInt e   -> print_endline (string_of_int e); DUnit
+      | DBool e  -> print_endline (string_of_bool e); DUnit
+      | DVar e   -> print_endline e; DUnit
       | _       -> failwith "Printint can only print integers.")
 
   | Application (Identifier n, e) ->
@@ -109,12 +109,12 @@ let rec eval_exp e env = match e with
     else
       failwith "No such function."
 
-  | Readint                 -> Int (read_int())
+  | Readint                 -> DInt (read_int())
   | Let (x, e1, e2)         -> let v1 = eval_exp e1 env in eval_exp e2 ((x, v1)::env)
   | New (x, e1, e2)         ->
     let v1 = eval_exp e1 env in
     let l = newref() in
-    let v2 = Hashtbl.add store (string_of_int l) v1;    eval_exp e2 ((x, Ref l)::env) in
+    let v2 = Hashtbl.add store (string_of_int l) v1;    eval_exp e2 ((x, DRef l)::env) in
     Hashtbl.remove store (string_of_int l);             v2
 
   | _                       -> failwith "Cannot evaluate unsupported expression."
@@ -131,4 +131,4 @@ and eval_function env = function
 (* Evaluate a program *)
 let eval_program = function
   | Fundef ("main", args, body) -> eval_exp body []
-  | Fundef (name, args, body)   -> Hashtbl.add functions name (Fundef (name, args, body)); Unit
+  | Fundef (name, args, body)   -> Hashtbl.add functions name (Fundef (name, args, body)); DUnit

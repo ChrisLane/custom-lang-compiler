@@ -2,11 +2,11 @@ open Ast
 
 (* Return string values for data types *)
 let dtype_string = function
-  | Int i   -> string_of_int i
-  | Ref i   -> failwith "Reached point of printing a ref"
-  | Bool b  -> string_of_bool b
-  | Var v   -> v
-  | Unit    -> " "
+  | DInt i   -> string_of_int i
+  | DRef i   -> failwith "Reached point of printing a ref"
+  | DBool b  -> string_of_bool b
+  | DVar v   -> v
+  | DUnit    -> " "
 
 (* Return string values for operators *)
 let opcode_string = function
@@ -38,6 +38,7 @@ let rec exp_string e i = match e with
   | Identifier s                -> (indent i) ^ "Identifier \"" ^ s ^ "\" "
   | Const n                     -> (indent i) ^ "Const "                    ^ string_of_int n   ^ " "
   | Bool n                      -> (indent i) ^ "Bool "                     ^ string_of_bool n  ^ " "
+  | Ref n                       -> (indent i) ^ "Ref "                      ^ string_of_int n   ^ " "
   | If (e, f, g)                -> (indent i) ^ "If ( "                     ^ exp_string e 0    ^ ") { \n"      ^ exp_string f (i+1) ^ "\n" ^ indent i          ^ "} Else { \n" ^ exp_string g (i+1) ^ "\n" ^ indent i ^ "} "
   | While (e, f)                -> (indent i) ^ "While ( "                  ^ exp_string e 0    ^ ") { \n"      ^ exp_string f (i+1) ^ "\n" ^ indent i          ^ "} "
   | Let (s, e, f)               -> (indent i) ^ "Let ( \"" ^ s ^ "\" = "    ^ exp_string e 0    ^ ") In { \n"   ^ exp_string f (i+1) ^ "\n" ^ indent i          ^ "} "

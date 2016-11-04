@@ -1,10 +1,10 @@
 (* Data types *)
 type dtype =
-  | Int of int
-  | Ref of int
-  | Bool of bool
-  | Var of string
-  | Unit
+  | DInt of int
+  | DRef of int
+  | DBool of bool
+  | DVar of string
+  | DUnit
 
 (* Operators *)
 type opcode =
@@ -24,6 +24,7 @@ type expression =
   | Application of      expression * expression                 (* e(e) *)
   | Const of            int                                     (* 7 *)
   | Bool of             bool                                    (* true *)
+  | Ref of              int                                     (* 1 *)
   | Readint                                                     (* read_int () *)
   | Print of            expression                              (* print_int (e) *)
   | Identifier of       string                                  (* x *)
