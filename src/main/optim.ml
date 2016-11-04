@@ -90,6 +90,7 @@ let rec optim_exp env = function
         | _     -> Seq (v, v2))
   | Print e                 -> Print (optim_exp env e)
   | Application (e, f)      -> Application (e, f)
+  | Readint                 -> Const (read_int())
   | Let (x, e, f)           -> (match optim_exp env e with
       | Const n -> optim_exp ((x, Const n)::env) f
       | Bool n  -> optim_exp ((x, Bool n)::env) f
