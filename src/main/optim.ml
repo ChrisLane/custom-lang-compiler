@@ -42,8 +42,8 @@ let optim_operator op e f = match e, f with
 
 (* Find a variable in variable storage and return it's value *)
 let rec lookup x = function
-  | []                          -> Empty
-  (*| (y, Ref z)::_  when x = y   -> find store (string_of_int z)*)
+  | []                          -> Deref (Identifier x)
+  | (y, Ref z)::_  when x = y   -> find store (string_of_int z)
   | (y, z)::_      when x = y   -> z
   | _::ys                       -> lookup x ys
 
@@ -64,9 +64,11 @@ let rec optim_exp env = function
   | Bool e                  -> Bool e
   | Ref e                   -> Ref e
 
-  | Identifier e            -> Identifier e
+  | Identifier e            -> lookup e env
 
-  | Deref e                 -> Deref e
+  | Deref e                 -> (match optim_exp env e with
+      | Ref f -> find store (string_of_int f)
+      | f -> f)
 
   | While (e, f)            -> (match optim_exp env e with
       | Bool false  -> Empty
@@ -79,12 +81,19 @@ let rec optim_exp env = function
       | n             -> If (n, optim_exp env f, optim_exp env g))
 
   | Operator (op, e, f)     -> optim_operator op (optim_exp env e) (optim_exp env f)
-  | Asg (Identifier e, f)   -> let v = optim_exp env f in (*update e v env;*) Asg (Identifier e, v)
+  | Asg (Identifier e, f)   -> let v = optim_exp env f in update e v env; Asg (Identifier e, v)
   | Seq (e, Empty)          -> optim_exp env e
-  | Seq (e, f)              -> Seq (optim_exp env e, optim_exp env f)
+  | Seq (e, f)              ->
+    let v = optim_exp env e in
+    let v2 = optim_exp env f in (match v with
+        | Empty -> v2
+        | _     -> Seq (v, v2))
   | Print e                 -> Print (optim_exp env e)
-  | Application (e, f)      -> Application (optim_exp env e, optim_exp env f)
-  | Let (x, e, f)           -> Let (x, optim_exp env e, optim_exp env f)
+  | Application (e, f)      -> Application (e, f)
+  | Let (x, e, f)           -> (match optim_exp env e with
+      | Const n -> optim_exp ((x, Const n)::env) f
+      | Bool n  -> optim_exp ((x, Bool n)::env) f
+      | _ -> Let (x, e, f))
 
   | New (x, e, Seq (f, g))  -> let l = newref() in (match f with
       | Asg (y, h) when Identifier x = y    -> (match optim_exp env h with
@@ -108,6 +117,14 @@ let rec optim_exp env = function
           optim_exp ((x, Ref l)::env) (Seq (f, g)) in
         remove store (string_of_int l);
         New (x, optim_exp env e, v2))
+
+  | New (x, e, f)           ->
+    let l = newref() in
+        let v2 = add store (string_of_int l) (optim_exp env e);
+          optim_exp ((x, Ref l)::env) f in
+        remove store (string_of_int l);
+        New (x, optim_exp env e, v2)
+
 
   | e                       -> e
 

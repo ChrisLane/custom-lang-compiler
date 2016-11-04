@@ -90,7 +90,7 @@ let rec eval_exp e env = match e with
       | _           -> failwith "Invalid value for if condition.")
 
   | Operator (op, e, f)     -> eval_operator op (eval_exp e env) (eval_exp f env)
-  | Asg (Identifier x, e)   -> let v = eval_exp e env in update x v env; v
+  | Asg (Identifier x, e)   -> let v = eval_exp e env in update x v env; DUnit
   | Seq (e, Empty)          -> eval_exp e env
   | Seq (e, f)              -> ignore (eval_exp e env);  eval_exp f env
 
