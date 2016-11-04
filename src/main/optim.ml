@@ -1,8 +1,10 @@
 open Ast
 open Hashtbl
 
+(* Variable storage *)
 let store = create 100
 
+(* Optimise a const operator *)
 let optim_operator_const e f = function
   | Plus    -> e + f
   | Minus   -> e - f
@@ -10,6 +12,7 @@ let optim_operator_const e f = function
   | Divide  -> e / f
   | _       -> failwith "Operator must be of type int."
 
+(* Optimise a comparison operator *)
 let optim_operator_compare e f = function
   | Leq     -> e <= f
   | Geq     -> e >= f
@@ -17,11 +20,13 @@ let optim_operator_compare e f = function
   | Noteq   -> e != f
   | _       -> failwith "Operator must be of comparison type."
 
+(* Optimise a boolean operator *)
 let optim_operator_bool e f = function
   | And -> e && f
   | Or  -> e || f
   | _   -> failwith "Operator must be of type bool."
 
+(* Optimise an operator *)
 let optim_operator op e f = match e, f with
   | Const e, Const f -> (match op with
       | Plus | Minus | Times | Divide   -> Const (optim_operator_const e f op)
@@ -52,6 +57,7 @@ let rec update x v = function
 let addr_gbl = ref 0
 let newref() = addr_gbl:=!addr_gbl+1; !addr_gbl
 
+(* Optimise an expression *)
 let rec optim_exp env = function
   | Empty                   -> Empty
   | Const e                 -> Const e
@@ -105,6 +111,7 @@ let rec optim_exp env = function
 
   | e                       -> e
 
+(* Optimise a function *)
 let rec optim_program = function
   | [] -> []
   | Fundef (name, args, body)::ys -> Fundef (name, args, (optim_exp [] body))::optim_program ys
