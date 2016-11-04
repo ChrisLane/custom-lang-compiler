@@ -1,0 +1,7 @@
+
+main (  ) { 
+    New ( "x" = Const 10 ) In { 
+        Print ( Const 10 ) 
+    } 
+}
+

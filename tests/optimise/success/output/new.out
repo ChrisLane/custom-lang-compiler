@@ -1,7 +1,10 @@
 
 main (  ) { 
     New ( "x" = Const 2 ) In { 
-        Asg ( Identifier "x" := Const 3 ) 
+        Asg ( Identifier "x" := Const 3 ) ; 
+        New ( "y" = Const 3 ) In { 
+            empty 
+        } 
     } 
 }
 

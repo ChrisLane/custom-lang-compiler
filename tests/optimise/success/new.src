@@ -1,5 +1,7 @@
+// This is to test that we can reduce new variables to a value set directly underneath and that values are properly stored.
 main() {
     var x = 1;
     x = 2;
     x = 3;
+    var y = $x;
 }
