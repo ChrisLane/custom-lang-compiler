@@ -1,0 +1,13 @@
+
+main (  ) { 
+    New ( "x" = Const 100 ) In { 
+        New ( "y" = Const 200 ) In { 
+            New ( "z" = Bool false ) In { 
+                New ( "a" = Bool true ) In { 
+                    Print ( Bool true ) 
+                } 
+            } 
+        } 
+    } 
+}
+

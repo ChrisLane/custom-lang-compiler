@@ -1,0 +1,15 @@
+main() {
+    var x = 100;
+    var y = 200;
+    var z = false;
+
+    var a = false;
+
+    a =
+        if ($x <= $y) {
+            !($x == $y) && !$z;
+        } else {
+            $a && true;
+        };
+    print $a;
+}

@@ -1,0 +1,11 @@
+
+main (  ) { 
+    New ( "a" = Const 50 ) In { 
+        New ( "b" = Const 50 ) In { 
+            New ( "c" = Const 50 ) In { 
+                Print ( Const 50 ) 
+            } 
+        } 
+    } 
+}
+

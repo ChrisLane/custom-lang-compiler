@@ -1,0 +1,57 @@
+
+main (  ) { 
+    New ( "x" = Const 50 ) In { 
+        New ( "a" = Const 0 ) In { 
+            New ( "b" = Const 1 ) In { 
+                Print ( Const 0 ) ; 
+                Print ( Const 1 ) ; 
+                New ( "temp" = Const 2 ) In { 
+                    Asg ( Identifier "a" := Const 1 ) ; 
+                    Asg ( Identifier "b" := Const 1 ) 
+                } ; 
+                Print ( Const 1 ) ; 
+                New ( "temp" = Const 3 ) In { 
+                    Asg ( Identifier "a" := Const 1 ) ; 
+                    Asg ( Identifier "b" := Const 2 ) 
+                } ; 
+                Print ( Const 2 ) ; 
+                New ( "temp" = Const 5 ) In { 
+                    Asg ( Identifier "a" := Const 2 ) ; 
+                    Asg ( Identifier "b" := Const 3 ) 
+                } ; 
+                Print ( Const 3 ) ; 
+                New ( "temp" = Const 8 ) In { 
+                    Asg ( Identifier "a" := Const 3 ) ; 
+                    Asg ( Identifier "b" := Const 5 ) 
+                } ; 
+                Print ( Const 5 ) ; 
+                New ( "temp" = Const 13 ) In { 
+                    Asg ( Identifier "a" := Const 5 ) ; 
+                    Asg ( Identifier "b" := Const 8 ) 
+                } ; 
+                Print ( Const 8 ) ; 
+                New ( "temp" = Const 21 ) In { 
+                    Asg ( Identifier "a" := Const 8 ) ; 
+                    Asg ( Identifier "b" := Const 13 ) 
+                } ; 
+                Print ( Const 13 ) ; 
+                New ( "temp" = Const 34 ) In { 
+                    Asg ( Identifier "a" := Const 13 ) ; 
+                    Asg ( Identifier "b" := Const 21 ) 
+                } ; 
+                Print ( Const 21 ) ; 
+                New ( "temp" = Const 55 ) In { 
+                    Asg ( Identifier "a" := Const 21 ) ; 
+                    Asg ( Identifier "b" := Const 34 ) 
+                } ; 
+                Print ( Const 34 ) ; 
+                New ( "temp" = Const 89 ) In { 
+                    Asg ( Identifier "a" := Const 34 ) ; 
+                    Asg ( Identifier "b" := Const 55 ) 
+                } ; 
+                empty 
+            } 
+        } 
+    } 
+}
+
