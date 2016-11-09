@@ -17,9 +17,13 @@ Please install the following:
 Once these are installed, run the `make` command in the main directory. If successful, a binary should have been created in the same directory.
 
 ### Running Tasks
+(./main \<task> \<filename>)
 Running the ./main binary on its own will output available tasks.
 
-Current Tasks (./main \<task> \<filename>):
+Available Flags:
+ * -o -         Optimise the parsed program.
+
+Available Tasks:
  * parse -      This will parse the source file and output the parsed structure.
  * evaluate -   This will evaluate the source file and return an output for the function.
 
@@ -89,7 +93,7 @@ Supported types are listed:
    * +, -, *, / - Returns an integer.
    * <=, >=, ==, || - Returns a boolean.
    * &&, || - Returns a boolean.
-   * ! - Unimplemented
+   * ! - Returns a boolean.
  * While - Returns a Unit type.
  * If - Returns the first body section if the condition is true, else it returns the second body section.
  * Assign - Returns the type of the value assigned.
@@ -97,6 +101,6 @@ Supported types are listed:
  * Printint - Returns a Unit type.
  * Deref - Returns an integer.
  * Application - Returns the result of a function.
- * Readint - Unimplemented.
+ * Readint - Returns an integer.
  * Let - Returns a Unit type.
  * New - Returns a Unit type.
