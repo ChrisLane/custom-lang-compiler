@@ -28,22 +28,24 @@ let optim_operator_bool e f = function
 
 (* Optimise an operator *)
 let optim_operator op e f = match e, f with
-  | Const e, Const f -> (match op with
-      | Plus | Minus | Times | Divide   -> Const (optim_operator_const e f op)
-      | Leq  | Geq   | Equal | Noteq    -> Bool (optim_operator_compare e f op)
-      | _                               -> failwith "Operation cannot be applied to consts.")
-  | Bool e, Bool f -> (match op with
-      | And | Or    -> Bool (optim_operator_bool e f op)
-      | _           -> failwith "Operator cannot be applied to booleans.")
-  | e, Bool f -> (match op with
-      | Not -> Bool (not f)
-      | _   -> failwith "Operator must be of type not.")
+  | Const x, Const y -> (match op with
+      | Plus | Minus | Times | Divide   -> Const (optim_operator_const x y op)
+      | Leq  | Geq   | Equal | Noteq    -> Bool (optim_operator_compare x y op)
+      | _                               -> Operator (op, e, f))
+  | Bool x, Bool y -> (match op with
+      | And | Or    -> Bool (optim_operator_bool x y op)
+      | _           -> Operator (op, e, f))
+  | x, Bool y-> (match op with
+      | Not -> Bool (not y)
+      | _   -> Operator (op, e, f))
   | _ -> Operator (op, e, f)
 
 (* Find a variable in variable storage and return it's value *)
 let rec lookup x = function
   | []                          -> Deref (Identifier x)
-  | (y, Ref z)::_  when x = y   -> find store (string_of_int z)
+  | (y, Ref z)::_  when x = y   -> (match find store (string_of_int z) with
+      | Unknown -> Deref (Identifier x)
+      | e       -> e)
   | (y, z)::_      when x = y   -> z
   | _::ys                       -> lookup x ys
 
@@ -63,6 +65,7 @@ let rec optim_exp env = function
   | Const e                 -> Const e
   | Bool e                  -> Bool e
   | Ref e                   -> Ref e
+  | Unknown                 -> Unknown
 
   | Identifier e            -> lookup e env
 
@@ -81,7 +84,9 @@ let rec optim_exp env = function
       | n             -> If (n, optim_exp env f, optim_exp env g))
 
   | Operator (op, e, f)     -> optim_operator op (optim_exp env e) (optim_exp env f)
-  | Asg (Identifier e, f)   -> let v = optim_exp env f in update e v env; Asg (Identifier e, v)
+  | Asg (Identifier e, f)   -> let v = optim_exp env f in (match v with
+      | Readint -> update e Unknown env; Asg(Identifier e, v)
+      | _       -> update e v env; Asg (Identifier e, v))
   | Seq (e, Empty)          -> optim_exp env e
   | Seq (e, f)              ->
     let v = optim_exp env e in
@@ -90,7 +95,7 @@ let rec optim_exp env = function
         | _     -> Seq (v, v2))
   | Print e                 -> Print (optim_exp env e)
   | Application (e, f)      -> Application (e, f)
-  | Readint                 -> Const (read_int())
+  | Readint                 -> Readint
   | Let (x, e, f)           -> (match optim_exp env e with
       | Const n -> optim_exp ((x, Const n)::env) f
       | Bool n  -> optim_exp ((x, Bool n)::env) f
@@ -121,10 +126,10 @@ let rec optim_exp env = function
 
   | New (x, e, f)           ->
     let l = newref() in
-        let v2 = add store (string_of_int l) (optim_exp env e);
-          optim_exp ((x, Ref l)::env) f in
-        remove store (string_of_int l);
-        New (x, optim_exp env e, v2)
+    let v2 = add store (string_of_int l) (optim_exp env e);
+      optim_exp ((x, Ref l)::env) f in
+    remove store (string_of_int l);
+    New (x, optim_exp env e, v2)
 
 
   | e                       -> e

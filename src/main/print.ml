@@ -35,6 +35,7 @@ let rec exp_string e i = match e with
   | Seq (e, f)                  -> exp_string e i ^ "; \n" ^ exp_string f i
   | Empty                       -> (indent i) ^ "empty "
   | Readint                     -> (indent i) ^ "Readint () "
+  | Unknown                     -> (indent i) ^ "Unknown "
   | Identifier s                -> (indent i) ^ "Identifier \"" ^ s ^ "\" "
   | Const n                     -> (indent i) ^ "Const "                    ^ string_of_int n   ^ " "
   | Bool n                      -> (indent i) ^ "Bool "                     ^ string_of_bool n  ^ " "

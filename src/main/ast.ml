@@ -25,6 +25,7 @@ type expression =
   | Const of            int                                     (* 7 *)
   | Bool of             bool                                    (* true *)
   | Ref of              int                                     (* 1 *)
+  | Unknown                                                     (* readint() *)
   | Readint                                                     (* read_int () *)
   | Print of            expression                              (* print_int (e) *)
   | Identifier of       string                                  (* x *)
