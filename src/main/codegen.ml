@@ -8,7 +8,13 @@ let string_of_operator = function
   | Minus   -> "sub"
   | Times   -> "mul"
   | Divide  -> "div"
-  | _       -> failwith "Unimplemented operator to convert to string."
+  | Leq     -> "leq"
+  | Geq     -> "geq"
+  | Equal   -> "eq"
+  | Noteq   -> "neq"
+  | And     -> "and"
+  | Or      -> "or"
+  | Not     -> "not"
 
 (* Hashtable for storing code *)
 let code = create 100
