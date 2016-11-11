@@ -26,6 +26,8 @@ Available Flags:
 Available Tasks:
  * parse -      This will parse the source file and output the parsed structure.
  * evaluate -   This will evaluate the source file and return an output for the function.
+ * interpret -  This will interpret the source file as assembly.
+ * codegen -    This will generate assembly-like code.
 
 Example run: `./main parse mysourcefile.src`
 
