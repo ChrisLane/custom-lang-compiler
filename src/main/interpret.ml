@@ -83,6 +83,7 @@ let rec interpret symt = function
     addr1
   | _ -> failwith "Not implemented. interpret."
 
+(* Jump if not zero *)
 and jnz symt n e f =
   if (find ram n) != 0 then interpret symt e else interpret symt f
 
