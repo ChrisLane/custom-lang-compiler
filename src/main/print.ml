@@ -102,3 +102,37 @@ let eval_file_optimised filename = open_in filename
                          |> String.concat ""
                          |> print_string
                          |> print_newline
+
+(* Parse, interpret and print a return value if successful *)
+let interpret_file filename = open_in filename
+                         |> Lexing.from_channel
+                         |> Error.parse_with_error
+                         |> Interpret.interpret_prog
+                         |> print_string
+                         |> print_newline
+
+(* Parse, optimise, interpret and print a return value if successful *)
+let interpret_file_optimised filename = open_in filename
+                         |> Lexing.from_channel
+                         |> Error.parse_with_error
+                         |> Optim.optim_program
+                         |> Interpret.interpret_prog
+                         |> print_string
+                         |> print_newline
+
+(* Parse, codegen and print a return value if successful *)
+let codegen_file filename = open_in filename
+                         |> Lexing.from_channel
+                         |> Error.parse_with_error
+                         |> Codegen.codegen_prog
+                         |> print_string
+                         |> print_newline
+
+(* Parse, optimise, codegen and print a return value if successful *)
+let codegen_file_optimised filename = open_in filename
+                         |> Lexing.from_channel
+                         |> Error.parse_with_error
+                         |> Optim.optim_program
+                         |> Codegen.codegen_prog
+                         |> print_string
+                         |> print_newline
