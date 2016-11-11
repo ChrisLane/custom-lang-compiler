@@ -27,7 +27,13 @@ let fun_of_op = function
   | Minus   -> ( - )
   | Times   -> ( * )
   | Divide  -> ( / )
-  | _       -> failwith "Unimplemented operator."
+  | Leq     -> (fun x y -> if x <= y then 1 else 0)
+  | Geq     -> (fun x y -> if x >= y then 1 else 0)
+  | Equal   -> (fun x y -> if x = y then 1 else 0)
+  | Noteq   -> (fun x y -> if x != y then 1 else 0)
+  | And     -> (fun x y -> if x=1 && y=1 then 1 else 0)
+  | Or      -> (fun x y -> if x=1 || y=1 then 1 else 0)
+  | Not     -> (fun x y -> if y=1 then 0 else 1)
 
 (* Interpret an expression *)
 let rec interpret symt = function
