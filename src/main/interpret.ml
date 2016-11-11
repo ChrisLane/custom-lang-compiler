@@ -10,6 +10,7 @@ let op (op, addr1, addr2) = acc := op (find ram addr1) (find ram addr2)
 let st addr = replace ram addr !acc
 let ldc n = acc := n
 let mv addr2 addr1 = replace ram addr1 (find ram addr2)
+(* jz code is below interpret *)
 
 (* Address initialising *)
 let addr_base = ref 0
@@ -37,6 +38,7 @@ let fun_of_op = function
 
 (* Interpret an expression *)
 let rec interpret symt = function
+  | Empty -> !addr_base
   | Operator (oper, e1, e2) ->
     let addr1 = interpret symt e1 in
     let addr2 = interpret symt e2 in
@@ -61,6 +63,18 @@ let rec interpret symt = function
   | Seq (e, f) ->
     let _ = interpret symt e in
     interpret symt f
+  | If (n, e, f) ->
+    let addr1 = interpret symt n in
+    let addr2 = jnz symt addr1 e f in
+    mv addr2 addr1;
+    addr_base := addr1;
+    st addr1;
+    addr1
+  | While (n, e) ->
+    let addr1 = interpret symt n in
+    ignore (jnz symt addr1 (Seq (e, While (n, e))) Empty);
+    addr_base := addr1;
+    addr1;
   | Let (x, e1, e2) ->
     let addr1 = interpret symt e1 in
     let addr2 = interpret ((x, addr1) :: symt) e2 in
@@ -68,6 +82,9 @@ let rec interpret symt = function
     addr_base := addr1;
     addr1
   | _ -> failwith "Not implemented. interpret."
+
+and jnz symt n e f =
+  if (find ram n) != 0 then interpret symt e else interpret symt f
 
 (* Interpret a function *)
 let interpret_func func =

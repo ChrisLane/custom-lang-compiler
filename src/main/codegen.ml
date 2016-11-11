@@ -34,10 +34,13 @@ let codegen_ldc n = "ld " ^ (string_of_int n)
 let codegen_mv (addr2, addr1) =
   "mv r" ^ (string_of_int addr2) ^ ", r" ^ (string_of_int addr1)
   ^ "\n" |> add_string code
+(* Jump if not zero *)
+let codegen_jnz (n, addr1, addr2) = ""
 
 
 (* Generate code for an expression *)
 let rec codegen symt = function
+  | Empty -> 0
   | Operator (op, e1, e2) ->
     let addr1 = codegen symt e1 in
     let addr2 = codegen symt e2 in

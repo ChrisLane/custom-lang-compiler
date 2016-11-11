@@ -1,0 +1,9 @@
+ld 1
+st r1
+ld 0
+st r2
+or r1, r2
+st r1
+mv r1, r2
+mv r2, r1
+ld r1

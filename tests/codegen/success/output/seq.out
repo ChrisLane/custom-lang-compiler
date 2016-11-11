@@ -1,0 +1,10 @@
+ld 10
+st r1
+mv r0, r1
+ld 20
+st r2
+mv r0, r2
+ld 30
+st r3
+mv r0, r3
+ld r3

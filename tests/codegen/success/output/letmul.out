@@ -1,0 +1,8 @@
+ld 10
+st r1
+mv r1, r2
+mv r1, r3
+mul r2, r3
+st r2
+mv r2, r1
+ld r1
