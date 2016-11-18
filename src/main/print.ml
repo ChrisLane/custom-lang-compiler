@@ -136,3 +136,20 @@ let codegen_file_optimised filename = open_in filename
                          |> Codegen.codegen_prog
                          |> print_string
                          |> print_newline
+
+(* Parse, codegenx86 and print a return value if successful *)
+let codegenx86_file filename = open_in filename
+                         |> Lexing.from_channel
+                         |> Error.parse_with_error
+                         |> Codegenx86.codegenx86_prog
+                         |> print_string
+                         |> print_newline
+
+(* Parse, optimise, codegenx86 and print a return value if successful *)
+let codegenx86_file_optimised filename = open_in filename
+                         |> Lexing.from_channel
+                         |> Error.parse_with_error
+                         |> Optim.optim_program
+                         |> Codegenx86.codegenx86_prog
+                         |> print_string
+                         |> print_newline
