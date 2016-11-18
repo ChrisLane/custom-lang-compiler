@@ -28,6 +28,7 @@ Available Tasks:
  * evaluate -   This will evaluate the source file and return an output for the function.
  * interpret -  This will interpret the source file as assembly.
  * codegen -    This will generate assembly-like code.
+ * codegenx86 - This will generate x86 assembly code.
 
 Example run: `./main parse mysourcefile.src`
 
