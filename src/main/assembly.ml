@@ -1,6 +1,6 @@
 let codegenx86_prefix = "
 	.file	\"template.c\"
-	.section	.rodata
+	.section 		.rodata
 .LC0:
 	.string	\"%d\\n\"
 	.text
@@ -18,11 +18,11 @@ print:
 	movl	%edi, -4(%rbp)
 	movl	-4(%rbp), %eax
 	movl	%eax, %esi
-	movl	$.LC0, %edi
+	leaq	.LC0(%rip), %rdi
 	movl	$0, %eax
-	call	printf
+	call	printf@PLT
 	movl	$0, %edi
-	call	exit
+	call	exit@PLT
 	.cfi_endproc
 .LFE0:
 	.size	print, .-print
@@ -45,7 +45,7 @@ main:
 
 let codegenx86_suffix = "
 	// End injected code
-	popq    %rdi
+	popq	%rdi
 	call	print
 	movl	$1, %eax
 	leave
@@ -54,6 +54,6 @@ let codegenx86_suffix = "
 	.cfi_endproc
 .LFE1:
 	.size	main, .-main
-	.ident	\"GCC: (GNU) 6.2.1 20160830\"
-	.section	.note.GNU-stack,\"\",@progbits
+	.ident	\"GCC: (Alpine 5.3.0) 5.3.0\"
+	.section		.note.GNU-stack,\"\",@progbits
 "
