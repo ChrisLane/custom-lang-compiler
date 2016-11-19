@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 make
-./main codegenx86 test.src > test.s
-gcc -c test.s -o test.o
-gcc test.o -o test
-./test
-rm -rf test.o test
+./main codegenx86 $1 > run.s
+gcc -c run.s -o run.o
+gcc run.o -o run
+./run
+rm -rf run.o run
