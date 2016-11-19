@@ -43,9 +43,9 @@ let codegenx86_op op =
 
 (* Instructions for an identifier *)
 let codegenx86_id addr =
-  "\t//offset " ^ (string_of_int addr) ^ "\n" ^
-  "\tmov " ^ (-16 -8 * addr |> string_of_int) ^ "(%rbp), %rax\n" ^
-  "\tpush %rax\n"
+  "\t//offset\t" ^ (string_of_int addr) ^ "\n" ^
+  "\tmov\t" ^ (-16 -8 * addr |> string_of_int) ^ "(%rbp), %rax\n" ^
+  "\tpush\t%rax\n"
   |> add_string code
 
 (* Instructions for a let *)
@@ -55,17 +55,38 @@ let codegenx86_let _ =
   "\tpushq\t%rax\n"
   |> add_string code
 
-(* Instructions for assignment *)
-let codegenx86_asg _ =
-  "\tpopq\t%rbx\n" ^
+(* Instructions for a new variable *)
+let codegenx86_new _ =
   "\tpopq\t%rax\n" ^
-  "\tmovq\t%rbx, (%rax)\n"
+  "\tpopq\t%rbx\n" ^
+  "\tpushq\t%rax\n"
+  |> add_string code
+
+(* Instructions for creating a pointer *)
+let codegenx86_ptr _ =
+  "\tleaq\t" ^ (-16 -8 * !sp |> string_of_int) ^ "(%rbp), %rax\n" ^
+  "\tpushq\t%rax\n"
   |> add_string code
 
 (* Instructions for dereferencing *)
 let codegenx86_deref _ =
   "\tpopq\t%rbx\n" ^
-  "\tmovq\t(%rbx), %rax)\n" ^
+  "\tmovq\t(%rbx), %rax\n" ^
+  "\tpushq\t%rax\n"
+  |> add_string code
+
+(* Instructions for assignment *)
+let codegenx86_asg _ =
+  "\tpopq\t%rbx\n" ^
+  "\tpopq\t%rax\n" ^
+  "\tmovq\t%rbx, (%rax)\n" ^
+  "\tpushq\t%rbx\n"
+  |> add_string code
+
+(* Instructions for dereferencing *)
+let codegenx86_deref _ =
+  "\tpopq\t%rbx\n" ^
+  "\tmovq\t(%rbx), %rax\n" ^
   "\tpushq\t%rax\n"
   |> add_string code
 
@@ -88,7 +109,7 @@ let rec codegenx86 symt = function
     codegenx86 symt e1;
     codegenx86 symt e2;
     codegenx86_op op;
-    sp := !sp -1
+    sp := !sp - 1
   | Identifier x ->
     let addr = lookup x symt in
     codegenx86_id (addr);
@@ -103,7 +124,13 @@ let rec codegenx86 symt = function
     codegenx86 symt e1;
     codegenx86 ((x, !sp) :: symt) e2;
     codegenx86_let ();
-    sp := !sp - 1
+    sp := !sp - 1;
+  | New (x, e1, e2) ->
+    codegenx86 symt e1;
+    codegenx86_ptr ();
+    sp := !sp + 1;
+    codegenx86 ((x, !sp) :: symt) e2;
+    codegenx86_new ();
   | Seq (e, Empty) -> codegenx86 symt e
   | Seq (e1, e2) ->
     let _ = codegenx86 symt e1 in
@@ -111,7 +138,8 @@ let rec codegenx86 symt = function
   | Asg (e1, e2) ->
     codegenx86 symt e1;
     codegenx86 symt e2;
-    codegenx86_asg ()
+    codegenx86_asg ();
+    sp := !sp + 1
   | Deref n ->
     codegenx86 symt n;
     codegenx86_deref ()
