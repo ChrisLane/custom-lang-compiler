@@ -1,0 +1,5 @@
+// This is to test identifier expresssions. This should evaluate to 10.
+main() {
+    var identifier = 10;
+    $identifier;
+}

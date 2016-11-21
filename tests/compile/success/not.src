@@ -1,0 +1,8 @@
+// This tests the not operators. It should evaluate to true.
+main() {
+    var x = 0 == 0;
+    var y = 0 == 1;
+
+    var z = $x && !$y;
+    print $z;
+}

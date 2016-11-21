@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin env sh
 set -e
 
 cd $(dirname $0)
@@ -92,6 +92,22 @@ do
     origin=$(dirname "$file")
 
     if [ -z "$(diff <(../main codegen "$file" 2>&1 || true) $origin/output/$output.out)" ]; then
+        echo "Passed test for file: $file"
+    else
+        echo "Failed test for file: $file" && fails=1
+    fi
+done
+
+echo
+echo "Compile Tests"
+echo "================"
+
+for file in compile/**/*.src
+do
+    output=$(basename "$file" | cut -d. -f1)
+    origin=$(dirname "$file")
+
+    if [ -z "$(diff <(./compileandrun.sh "tests/$file" 2>&1 || true) $origin/output/$output.out)" ]; then
         echo "Passed test for file: $file"
     else
         echo "Failed test for file: $file" && fails=1

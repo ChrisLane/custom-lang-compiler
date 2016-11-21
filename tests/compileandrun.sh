@@ -5,9 +5,9 @@ if [ "$#" -ne 1 ]; then
     exit 0
 fi
 
-make
+cd ../
 ./main codegenx86 $1 > run.s
 gcc -c run.s -o run.o
 gcc run.o -o run
 ./run
-rm -rf run.o run
+rm -rf run.s run.o run

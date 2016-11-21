@@ -1,0 +1,8 @@
+// This tests the seq expression. This should evaluate.
+// Seq is the expression listing other expressions in the body e.g. 1;2;3;4
+main () {
+    1;
+    2;
+    3;
+    4;
+}

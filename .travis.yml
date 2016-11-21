@@ -1,21 +1,10 @@
+sudo: required
 language: generic
-cache:
-    apt: true
-addons:
-    apt:
-        sources:
-            - avsm
-        packages:
-            - ocaml
-            - opam
-env:
-    - OPAMYES=1 OPAMVERBOSE=1
+
+services:
+    - docker
 before_install:
-    - ocaml -version
-    - opam --version
-install:
-    - opam init
-    - opam install ocamlfind menhir
-    - eval `opam config env`
+    - docker build -t compiler .
+    - docker run compiler /bin/sh -c "make test"
 script:
-    - make test
+    - docker ps -a | grep -q compiler

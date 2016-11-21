@@ -8,6 +8,7 @@ RUN sudo apk add --no-cache vim git gcc m4 && \
     eval `opam config env` && \
     git clone https://github.com/ChrisLane/Compiler-Construction ~/compiler && \
     cd ~/compiler && \
+    git checkout dev && \
     make
 
 WORKDIR /home/opam/compiler

@@ -1,0 +1,5 @@
+// This tests the printint expression. This should evaluate to 1.
+main() {
+    var x = 1;
+    print $x;
+}

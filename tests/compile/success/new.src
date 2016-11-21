@@ -1,0 +1,6 @@
+// This is to test the new expression. This should evaluate to 20.
+main() {
+    var x = 10;
+    x = $x + $x;
+    print $x;
+}

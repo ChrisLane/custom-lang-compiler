@@ -1,0 +1,6 @@
+// This is to test const expressions (1,2,3). This should evaluate to 3.
+main() {
+    1;
+    2;
+    3;
+}

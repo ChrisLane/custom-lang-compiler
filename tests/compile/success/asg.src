@@ -1,0 +1,6 @@
+// This is to test the asg expression. This should evalute to 10.
+main() {
+    var x = 50;
+    x = (10+20) / 3;
+    print $x;
+}
