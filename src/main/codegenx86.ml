@@ -44,7 +44,7 @@ let codegenx86_op op =
 (* Instructions for an identifier *)
 let codegenx86_id addr =
   "\t//offset\t" ^ (string_of_int addr) ^ "\n" ^
-  "\tmov\t" ^ (-16 -8 * addr |> string_of_int) ^ "(%rbp), %rax\n" ^
+  "\tmovq\t" ^ (-16 -8 * addr |> string_of_int) ^ "(%rbp), %rax\n" ^
   "\tpush\t%rax\n"
   |> add_string code
 
@@ -124,28 +124,31 @@ let rec codegenx86 symt = function
     codegenx86 symt e1;
     codegenx86 ((x, !sp) :: symt) e2;
     codegenx86_let ();
-    sp := !sp - 1;
+    sp := !sp - 1
   | New (x, e1, e2) ->
     codegenx86 symt e1;
     codegenx86_ptr ();
     sp := !sp + 1;
     codegenx86 ((x, !sp) :: symt) e2;
     codegenx86_new ();
+    sp := !sp -1
   | Seq (e, Empty) -> codegenx86 symt e
   | Seq (e1, e2) ->
-    let _ = codegenx86 symt e1 in
+    codegenx86 symt e1;
+    "popq\t%rax\n" |> add_string code;
     codegenx86 symt e2
   | Asg (e1, e2) ->
     codegenx86 symt e1;
     codegenx86 symt e2;
     codegenx86_asg ();
-    sp := !sp + 1
+    sp := !sp - 1
   | Deref n ->
     codegenx86 symt n;
     codegenx86_deref ()
   | Print n ->
     codegenx86 symt n;
-    codegenx86_print ()
+    codegenx86_print ();
+    sp := !sp - 1
   | _ -> failwith "Unimplemented expression."
 
 (* Generate x86 code for a function *)
