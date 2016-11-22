@@ -77,10 +77,10 @@ let codegenx86_deref _ =
 
 (* Instructions for assignment *)
 let codegenx86_asg _ =
-  "\tpopq\t%rbx\n" ^
   "\tpopq\t%rax\n" ^
-  "\tmovq\t%rbx, (%rax)\n" ^
-  "\tpushq\t%rbx\n"
+  "\tpopq\t%rbx\n" ^
+  "\tmovq\t%rax, (%rbx)\n" ^
+  "\tpushq\t%rax\n"
   |> add_string code
 
 (* Instructions for dereferencing *)
