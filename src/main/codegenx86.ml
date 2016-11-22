@@ -21,7 +21,12 @@ let instruction_of_op = function
   | Noteq   -> "\tcmpq\t%rbx, %rax\n" ^ "\tsetne\t%al\n" ^ "\tmovzbq\t%al, %rax\n"
   | And     -> "\tandq\t%rbx, %rax\n"
   | Or      -> "\torq\t%rbx, %rax\n"
-  | _       -> failwith "Operator not implemented."
+  | Not     -> "\tcmpq\t%rbx, %rax\n" ^ "\tsetz\t%al\n" ^ "\tmovzbq\t%al, %rax\n"
+
+(* Instructions for empty *)
+let codegenx86_empty _ =
+  "\tpushq\t$0\n"
+  |> add_string code
 
 (* Instructions for a const *)
 let codegenx86_const n =
@@ -104,7 +109,9 @@ let rec lookup x = function
 
 (* Generate x86 code for expressions *)
 let rec codegenx86 symt = function
-  | Empty -> "\tnop\n" |> add_string code
+  | Empty ->
+    codegenx86_empty ();
+    sp := !sp + 1
   | Operator (op, e1, e2) ->
     codegenx86 symt e1;
     codegenx86 symt e2;
