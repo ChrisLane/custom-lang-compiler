@@ -5,8 +5,7 @@ if [ "$#" -ne 1 ]; then
     exit 0
 fi
 
-cd ../
-./main codegenx86 $1 > run.s
+../main codegenx86 $1 > run.s
 gcc -c run.s -o run.o
 gcc run.o -o run
 ./run
