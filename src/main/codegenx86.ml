@@ -14,7 +14,7 @@ let instruction_of_op = function
   | Plus    -> "\taddq\t%rbx, %rax\n"
   | Minus   -> "\tsubq\t%rbx, %rax\n"
   | Times   -> "\timulq\t%rbx\n"
-  | Divide  -> "\tmovq\t$0, %rdx\n" ^ "\tidivq\t%rbx\n"
+  | Divide  -> "\txor\t%rdx, %rdx\n" ^ "\tidivq\t%rbx\n"
   | Leq     -> "\tcmpq\t%rbx, %rax\n" ^ "\tsetle\t%al\n" ^ "\tmovzbq\t%al, %rax\n"
   | Geq     -> "\tcmpq\t%rbx, %rax\n" ^ "\tsetge\t%al\n" ^ "\tmovzbq\t%al, %rax\n"
   | Equal   -> "\tcmpq\t%rbx, %rax\n" ^ "\tsete\t%al\n" ^ "\tmovzbq\t%al, %rax\n"
