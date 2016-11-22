@@ -1,9 +1,9 @@
 // This is to test that variable shadowing works. This should evaluate to 4.
 main() {
     let x = 1 {
-        let x = $x + $x {
-            let x = $x + $x {
-                print $x;
+        let x = x + x {
+            let x = x + x {
+                print x;
             };
         };
     };
