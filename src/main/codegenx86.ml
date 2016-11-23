@@ -201,6 +201,7 @@ let rec codegenx86 symt = function
     lblp := !lblp + 1;
     codegenx86_jmplbl (!lblp - 1) !lblp;
     codegenx86 symt e;
+    codegenx86_pop ();
     codegenx86_lbl (!lblp - 1);
     codegenx86 symt x;
     codegenx86_testjnz ();
