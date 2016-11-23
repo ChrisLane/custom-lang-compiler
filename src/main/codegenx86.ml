@@ -107,23 +107,30 @@ let codegenx86_print _ =
   "\tcall\tprint\n"
   |> add_string code
 
-(* Instructions to test and jump on an if gate *)
-let codegenx86_iftest _ =
+(* Instructions to test and jump if gate zero *)
+let codegenx86_testjz _ =
   "\tpopq\t%rax\n" ^
   "\ttest\t%rax, %rax\n" ^
   "\tjz .L" ^ (string_of_int !lblp) ^ "\n"
   |> add_string code
 
-(* Instructions for jumping over "else" and labeling "else" code *)
-let codegenx86_else _ =
-  "\tjmp .L" ^ (string_of_int !lblp) ^ "\n" ^
-  ".L" ^ (string_of_int (!lblp - 1)) ^ ":\n"
+(* Instructions to test and jump if gate not zero *)
+let codegenx86_testjnz _ =
+  "\tpopq\t%rax\n" ^
+  "\ttest\t%rax, %rax\n" ^
+  "\tjnz .L" ^ (string_of_int !lblp) ^ "\n"
   |> add_string code
 
-(* Instructions to label the end of the if code *)
-let codegenx86_endif _ =
-  ".L" ^ (string_of_int (!lblp - 1)) ^ ":\n"
+(* Generate a label *)
+let codegenx86_lbl n =
+  ".L" ^ (string_of_int n) ^ ":\n"
   |> add_string code
+
+(* Instruction to jump to a label and create a new label*)
+let codegenx86_jmplbl x y =
+  "\tjmp .L" ^ (string_of_int x) ^ "\n"
+  |> add_string code;
+  codegenx86_lbl y
 
 (* Lookup the address for a value *)
 let rec lookup x = function
@@ -182,14 +189,22 @@ let rec codegenx86 symt = function
     sp := !sp - 1
   | If (x, e1, e2) ->
     codegenx86 symt x;
-    codegenx86_iftest ();
+    codegenx86_testjz ();
     lblp := !lblp + 1;
     sp := !sp - 1;
     codegenx86 symt e1;
-    codegenx86_else ();
+    codegenx86_jmplbl !lblp (!lblp - 1);
     lblp := !lblp + 1;
     codegenx86 symt e2;
-    codegenx86_endif ();
+    codegenx86_lbl (!lblp - 1)
+  | While (x, e) ->
+    lblp := !lblp + 1;
+    codegenx86_jmplbl (!lblp - 1) !lblp;
+    codegenx86 symt e;
+    codegenx86_lbl (!lblp - 1);
+    codegenx86 symt x;
+    codegenx86_testjnz ();
+    lblp := !lblp + 1
   | _ -> failwith "Unimplemented expression."
 
 (* Generate x86 code for a function *)

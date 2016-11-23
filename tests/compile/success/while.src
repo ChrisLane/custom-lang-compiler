@@ -1,0 +1,9 @@
+// This is to test the while loop expression. This should evaluate to 6.
+main() {
+    var a = 0;
+    while ($a <= 5) {
+        a = $a + 1;
+    };
+
+    return $a;
+}
