@@ -4,6 +4,7 @@ open Buffer
 
 let code = create 25
 let sp = ref 0
+let lblp = ref 0
 let addr_base = ref 0
 
 (* Generate a string for the int value of a bool *)
@@ -95,10 +96,33 @@ let codegenx86_deref _ =
   "\tpushq\t%rax\n"
   |> add_string code
 
+(* Instruction to pop from the stack *)
+let codegenx86_pop _ =
+  "\tpopq\t%rax\n"
+  |> add_string code
+
 (* Instructions for print *)
 let codegenx86_print _ =
   "\tpopq\t%rdi\n" ^
   "\tcall\tprint\n"
+  |> add_string code
+
+(* Instructions to test and jump on an if gate *)
+let codegenx86_iftest _ =
+  "\tpopq\t%rax\n" ^
+  "\ttest\t%rax, %rax\n" ^
+  "\tjz .L" ^ (string_of_int !lblp) ^ "\n"
+  |> add_string code
+
+(* Instructions for jumping over "else" and labeling "else" code *)
+let codegenx86_else _ =
+  "\tjmp .L" ^ (string_of_int !lblp) ^ "\n" ^
+  ".L" ^ (string_of_int (!lblp - 1)) ^ ":\n"
+  |> add_string code
+
+(* Instructions to label the end of the if code *)
+let codegenx86_endif _ =
+  ".L" ^ (string_of_int (!lblp - 1)) ^ ":\n"
   |> add_string code
 
 (* Lookup the address for a value *)
@@ -142,7 +166,7 @@ let rec codegenx86 symt = function
   | Seq (e, Empty) -> codegenx86 symt e
   | Seq (e1, e2) ->
     codegenx86 symt e1;
-    "popq\t%rax\n" |> add_string code;
+    codegenx86_pop ();
     codegenx86 symt e2
   | Asg (e1, e2) ->
     codegenx86 symt e1;
@@ -156,6 +180,16 @@ let rec codegenx86 symt = function
     codegenx86 symt n;
     codegenx86_print ();
     sp := !sp - 1
+  | If (x, e1, e2) ->
+    codegenx86 symt x;
+    codegenx86_iftest ();
+    lblp := !lblp + 1;
+    sp := !sp - 1;
+    codegenx86 symt e1;
+    codegenx86_else ();
+    lblp := !lblp + 1;
+    codegenx86 symt e2;
+    codegenx86_endif ();
   | _ -> failwith "Unimplemented expression."
 
 (* Generate x86 code for a function *)
