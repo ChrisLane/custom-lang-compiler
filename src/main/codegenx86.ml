@@ -169,11 +169,12 @@ let rec codegenx86 symt = function
     sp := !sp + 1;
     codegenx86 ((x, !sp) :: symt) e2;
     codegenx86_new ();
-    sp := !sp -1
+    sp := !sp - 1
   | Seq (e, Empty) -> codegenx86 symt e
   | Seq (e1, e2) ->
     codegenx86 symt e1;
     codegenx86_pop ();
+    sp := !sp - 1;
     codegenx86 symt e2
   | Asg (e1, e2) ->
     codegenx86 symt e1;
@@ -202,6 +203,7 @@ let rec codegenx86 symt = function
     codegenx86_jmplbl (!lblp - 1) !lblp;
     codegenx86 symt e;
     codegenx86_pop ();
+    sp := !sp - 1;
     codegenx86_lbl (!lblp - 1);
     codegenx86 symt x;
     codegenx86_testjnz ();
