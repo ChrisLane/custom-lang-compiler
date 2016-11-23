@@ -74,11 +74,11 @@ exp:
   | DEREF;      e = exp                                                     { Deref e }
   | READINT                                                                 { Readint }
   | PRINT;      e = exp                                                     { Print e }
+  | LET;    s = NAME; ASG; e = exp; f = bracedbody            { Let (s, e, f) }
 
 (* Match variable setting expressions with bodies *)
 set:
   | TYPE;   s = NAME; ASG; e = exp; SEMICOLON;  f = body*; g = set*     { New (s, e, make_seq (f@g)) }
-  | LET;    s = NAME; ASG; e = exp; f = bracedbody SEMICOLON            { Let (s, e, f) }
 
 (* Match an expression within parentheses *)
 params:

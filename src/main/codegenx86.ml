@@ -204,6 +204,7 @@ let rec codegenx86 symt = function
     codegenx86_lbl (!lblp - 1);
     codegenx86 symt x;
     codegenx86_testjnz ();
+    codegenx86_empty ();
     lblp := !lblp + 1
   | _ -> failwith "Unimplemented expression."
 

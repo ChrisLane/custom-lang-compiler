@@ -1,2 +1,1 @@
-Syntax error at line 6 and column 4: print.
-Fatal error: exception Error.Error
+Fatal error: exception Failure("Could not find a variable and value during lookup.")
