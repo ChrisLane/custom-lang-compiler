@@ -10,11 +10,11 @@ print:
 	movl	%edi, -4(%rbp)
 	movl	-4(%rbp), %eax
 	movl	%eax, %esi
-	movl	$.LC0, %edi
+	leaq	.LC0(%rip), %rdi
 	movl	$0, %eax
-	call	printf
+	call	printf@PLT
 	movl	$0, %edi
-	call	exit
+	call	exit@PLT
 	.globl	main
 	.type	main, @function
 main:
