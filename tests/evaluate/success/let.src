@@ -1,7 +1,7 @@
 // This is to test the let expression. This should evaluate to 100.
 main() {
     let x = 50 {
-       var c = $x + $x;
+       var c = x + x;
        return $c;
     };
 }

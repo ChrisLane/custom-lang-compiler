@@ -1,8 +1,8 @@
 // This test is to make sure that a let variable cannot be accessed outside of scope. This should not evaluate.
 main() {
     let x = 50 {
-        $x;
+        x;
     };
 
-    print $x;
+    print x;
 }

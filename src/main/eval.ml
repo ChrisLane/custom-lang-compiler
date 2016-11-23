@@ -48,7 +48,6 @@ let eval_operator op e f = match e, f with
 (* Find a variable in variable storage and return it's value *)
 let rec lookup x = function
   | []                          -> failwith "Could not find a variable and value during lookup."
-  | (y, DRef z)::ys  when x = y  -> Hashtbl.find store (string_of_int z)
   | (y, z)::ys      when x = y  -> z
   | y::ys                       -> lookup x ys
 
@@ -73,10 +72,10 @@ let rec eval_exp e env = match e with
   | Empty           -> DUnit
   | Const e         -> DInt e
   | Bool e          -> DBool e
-  | Identifier e    -> DVar e
+  | Identifier e    -> lookup e env
 
   | Deref e -> (match eval_exp e env with
-      | DVar f   -> lookup f env
+      | DRef z  -> Hashtbl.find store (string_of_int z)
       | _       -> failwith "Can only dereference a variable.")
 
   | While (e, f) -> (match eval_exp e env with
