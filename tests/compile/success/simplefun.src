@@ -1,0 +1,7 @@
+ten() {
+    return 10;
+}
+
+main() {
+    ten();
+}

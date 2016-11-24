@@ -141,7 +141,7 @@ let codegen_file_optimised filename = open_in filename
 let codegenx86_file filename = open_in filename
                          |> Lexing.from_channel
                          |> Error.parse_with_error
-                         |> Codegenx86.codegenx86_prog
+                         |> Codegenx86.compile
                          |> print_string
                          |> print_newline
 
@@ -150,6 +150,6 @@ let codegenx86_file_optimised filename = open_in filename
                          |> Lexing.from_channel
                          |> Error.parse_with_error
                          |> Optim.optim_program
-                         |> Codegenx86.codegenx86_prog
+                         |> Codegenx86.compile
                          |> print_string
                          |> print_newline

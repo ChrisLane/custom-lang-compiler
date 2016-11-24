@@ -15,18 +15,11 @@ print:
 	call	printf@PLT
 	movl	$0, %edi
 	call	exit@PLT
-	.globl	main
-	.type	main, @function
-main:
-	pushq	%rbp
-	movq	%rsp, %rbp
-	subq	$16, %rsp
-	// Begin injected code
+	// Begin injected program
 
 "
-
 let codegenx86_suffix = "
-	// End injected code
+	// End injected program
 	popq	%rdi
 	call	print
 	movl	$1, %eax

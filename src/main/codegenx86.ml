@@ -5,7 +5,6 @@ open Buffer
 let code = create 25
 let sp = ref 0
 let lblp = ref 0
-let addr_base = ref 0
 
 (* Generate a string for the int value of a bool *)
 let string_int_of_bool n = if n then string_of_int 1 else string_of_int 0
@@ -132,6 +131,29 @@ let codegenx86_jmplbl x y =
   |> add_string code;
   codegenx86_lbl y
 
+(* Instructions that come before a function definition *)
+let codegenx86_newfunc n =
+  "\t.globl\t" ^ n ^ "\n" ^
+  "\t.type\t" ^ n ^ ", @function\n" ^
+  n ^ ":\n" ^
+  "\tpushq\t%rbp\n" ^
+  "\tmovq\t%rsp, %rbp\n" ^
+  "\tsubq\t$16, %rsp\n"
+  |> add_string code
+
+(* Instructions for the end of a function *)
+let codegenx86_endfunc _ =
+  "\tpopq\t%rax\n" ^
+  "\tleave\n" ^
+  "\tret\n"
+  |> add_string code
+
+(* Instructions to call a function and store it's value *)
+let codegenx86_call n =
+  "\tcall\t" ^ n ^ "\n" ^
+  "\tpushq\t %rax\n"
+  |> add_string code
+
 (* Lookup the address for a value *)
 let rec lookup x = function
   | [] -> failwith "Could not find symbol address."
@@ -209,20 +231,34 @@ let rec codegenx86 symt = function
     codegenx86_testjnz ();
     codegenx86_empty ();
     lblp := !lblp + 1
+  | Application (Identifier n, e) ->
+    codegenx86_call n
   | _ -> failwith "Unimplemented expression."
 
 (* Generate x86 code for a function *)
-let codegenx86_func func =
+let codegenx86_func name args exp =
+  codegenx86_newfunc name;
+  codegenx86 [] exp;
+  codegenx86_endfunc ()
+
+(* Generate x86 code for the main function *)
+let codegenx86_main exp =
+  codegenx86_newfunc "main";
+  codegenx86 [] exp
+
+(* Generate x86 injection code for a program *)
+let rec codegenx86_prog = function
+  | []                              -> failwith "Codegenx86 requires a 'main' function."
+  | Fundef ("main", args, body)::ys -> codegenx86_main body
+  | Fundef (name, args, body)::ys   ->
+    codegenx86_func name args body;
+    codegenx86_prog ys
+
+(* Generate x86 code wrapped inside an x86 template *)
+let compile prog =
   reset code;
   add_string code codegenx86_prefix;
-  addr_base := 0;
-  codegenx86 [] func;
+  codegenx86_prog prog;
   add_string code codegenx86_suffix;
   output_buffer stdout code;
   ""
-
-(* Generate x86 code for a program *)
-let rec codegenx86_prog = function
-  | []                              -> failwith "Codegenx86 requires a 'main' function."
-  | Fundef ("main", args, body)::ys -> codegenx86_func body
-  | _::ys                           -> codegenx86_prog ys
