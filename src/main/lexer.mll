@@ -53,6 +53,8 @@ rule read = parse
   | "print"         { PRINT }
   | "let"           { LET }
   | "return"        { RETURN }
+  | "break"         { BREAK }
+  | "continue"      { CONTINUE }
 
   | main            { MAIN (Lexing.lexeme lexbuf) }
   | name            { NAME (Lexing.lexeme lexbuf) }

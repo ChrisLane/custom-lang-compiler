@@ -5,6 +5,7 @@ open Template
 let code = create 25
 let sp = ref 0
 let lblp = ref 0
+let exitp = ref 0
 
 (* Generate a string for the int value of a bool *)
 let string_int_of_bool n = if n then string_of_int 1 else string_of_int 0
@@ -106,6 +107,21 @@ let codegenx86_print _ =
   "\tcall\tprint\n"
   |> add_string code
 
+(* Generate a label *)
+let codegenx86_lbl n =
+  ".L" ^ (string_of_int n) ^ ":\n"
+  |> add_string code
+
+let codegenx86_break _ =
+  "\tjmp .L" ^ (string_of_int (!exitp)) ^ "\n"
+  |> add_string code
+
+(* Instruction to jump to a label and create a new label*)
+let codegenx86_jmplbl x y =
+  "\tjmp .L" ^ (string_of_int x) ^ "\n"
+  |> add_string code;
+  codegenx86_lbl y
+
 (* Instructions to test and jump if gate zero *)
 let codegenx86_testjz _ =
   "\tpopq\t%rax\n" ^
@@ -114,22 +130,12 @@ let codegenx86_testjz _ =
   |> add_string code
 
 (* Instructions to test and jump if gate not zero *)
-let codegenx86_testjnz _ =
+let codegenx86_testjnz x =
   "\tpopq\t%rax\n" ^
   "\ttest\t%rax, %rax\n" ^
-  "\tjnz .L" ^ (string_of_int !lblp) ^ "\n"
-  |> add_string code
-
-(* Generate a label *)
-let codegenx86_lbl n =
-  ".L" ^ (string_of_int n) ^ ":\n"
-  |> add_string code
-
-(* Instruction to jump to a label and create a new label*)
-let codegenx86_jmplbl x y =
-  "\tjmp .L" ^ (string_of_int x) ^ "\n"
+  "\tjnz .L" ^ (string_of_int x) ^ "\n"
   |> add_string code;
-  codegenx86_lbl y
+  codegenx86_jmplbl (!lblp + 1) (!lblp + 1)
 
 (* Instructions that come before a function definition *)
 let codegenx86_newfunc n =
@@ -234,27 +240,37 @@ let rec codegenx86 symt = function
     let _ = codegenx86 symt n in
     codegenx86_endfunc ();
     sp := !sp - 1
+  | Break ->
+    codegenx86_break ()
   | If (x, e1, e2) ->
+    let oldexit = !exitp in
     codegenx86 symt x;
     codegenx86_testjz ();
     lblp := !lblp + 1;
     sp := !sp - 1;
+    exitp := !lblp;
     codegenx86 symt e1;
     codegenx86_jmplbl !lblp (!lblp - 1);
     lblp := !lblp + 1;
     codegenx86 symt e2;
-    codegenx86_lbl (!lblp - 1)
+    exitp := oldexit;
+    codegenx86_lbl (!lblp - 1);
+    lblp := !lblp + 1
   | While (x, e) ->
+    codegenx86_jmplbl (!lblp) (!lblp + 1);
     lblp := !lblp + 1;
-    codegenx86_jmplbl (!lblp - 1) !lblp;
+    let oldlbl = !lblp in
+    let oldexit = !lblp in
+    exitp := !lblp + 1;
     codegenx86 symt e;
     codegenx86_pop ();
     sp := !sp - 1;
-    codegenx86_lbl (!lblp - 1);
+    codegenx86_lbl (oldlbl - 1);
     codegenx86 symt x;
-    codegenx86_testjnz ();
-    codegenx86_empty ();
-    lblp := !lblp + 1
+    codegenx86_testjnz oldlbl;
+    lblp := !lblp + 1;
+    exitp := oldexit;
+    codegenx86_empty ()
   | Application (Identifier n, e) ->
     let args = make_list e in
     List.iteri (fun i x ->

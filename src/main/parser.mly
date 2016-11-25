@@ -8,7 +8,7 @@
 %token              LEQ GEQ EQUALTO NOTEQTO
 %token              AND OR NOT
 (* Expressions *)
-%token              TYPE LET WHILE IF ASG ELSE READINT PRINT RETURN DEREF
+%token              TYPE LET WHILE IF ASG ELSE READINT PRINT DEREF RETURN BREAK CONTINUE
 (* Formatting *)
 %token              LPAREN RPAREN SEMICOLON LBRACE RBRACE PARAMSEP
 %token              EOF
@@ -72,9 +72,11 @@ exp:
   | WHILE;      p = params;     e = bracedbody                              { While (p, e) }
   | RETURN;     e = exp                                                     { Return e }
   | DEREF;      e = exp                                                     { Deref e }
+  | BREAK                                                                   { Break }
+  | CONTINUE                                                                { Continue }
   | READINT                                                                 { Readint }
   | PRINT;      e = exp                                                     { Print e }
-  | LET;    s = NAME; ASG; e = exp; f = bracedbody            { Let (s, e, f) }
+  | LET;    s = NAME; ASG; e = exp; f = bracedbody                          { Let (s, e, f) }
 
 (* Match variable setting expressions with bodies *)
 set:

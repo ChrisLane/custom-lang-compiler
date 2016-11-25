@@ -34,6 +34,8 @@ let indent i = indentrec i ""
 let rec exp_string e i = match e with
   | Seq (e, f)                  -> exp_string e i ^ "; \n" ^ exp_string f i
   | Empty                       -> (indent i) ^ "empty "
+  | Break                       -> (indent i) ^ "break "
+  | Continue                    -> (indent i) ^ "continue "
   | Readint                     -> (indent i) ^ "Readint () "
   | Unknown                     -> (indent i) ^ "Unknown "
   | Identifier s                -> (indent i) ^ "Identifier \"" ^ s ^ "\" "
