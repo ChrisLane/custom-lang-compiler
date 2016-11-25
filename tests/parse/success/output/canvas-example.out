@@ -2,7 +2,7 @@
 main (  ) { 
     New ( "x" = Const 1 ) In { 
         Asg ( Identifier "x" := Operator ( Plus, Identifier "x" , Const 1 ) ) ; 
-        Deref ( Identifier "x" ) 
+        Return ( Deref ( Identifier "x" ) ) 
     } 
 }
 

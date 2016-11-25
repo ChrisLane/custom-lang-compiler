@@ -1,5 +1,5 @@
 
 main (  ) { 
-    Deref ( Identifier "x" ) 
+    Return ( Deref ( Identifier "x" ) ) 
 }
 

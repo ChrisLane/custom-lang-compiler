@@ -15,7 +15,7 @@ bisect ( l, r ) {
         } Else { 
             empty 
         } ; 
-        Deref ( Identifier "mid" ) 
+        Return ( Deref ( Identifier "mid" ) ) 
     } 
 }
 

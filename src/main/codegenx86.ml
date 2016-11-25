@@ -1,6 +1,6 @@
 open Ast
-open Assembly
 open Buffer
+open Template
 
 let code = create 25
 let sp = ref 0
@@ -230,6 +230,10 @@ let rec codegenx86 symt = function
     codegenx86 symt n;
     codegenx86_print ();
     codegenx86_empty ()
+  | Return n ->
+    let _ = codegenx86 symt n in
+    codegenx86_endfunc ();
+    sp := !sp - 1
   | If (x, e1, e2) ->
     codegenx86 symt x;
     codegenx86_testjz ();
@@ -261,7 +265,7 @@ let rec codegenx86 symt = function
     codegenx86 symt e;
     codegenx86_call n;
     sp := !sp + 1
-  | _ -> failwith "Unimplemented expression."
+  | _ -> failwith "Unimplemented expression for codegen."
 
 (* Push arguments onto the stack and generate symt *)
 let rec codegenx86_addargs count = function

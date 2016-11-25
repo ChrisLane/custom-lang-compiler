@@ -5,7 +5,7 @@ bisection ( f, a, b, tol, nmax ) {
             New ( "c" = Operator ( Plus, Identifier "a" , Identifier "b" ) ) In { 
                 Asg ( Identifier "c" := Operator ( Divide, Identifier "c" , Const 2 ) ) ; 
                 If ( Operator ( Or, Operator ( Equal, Application ( Identifier "f" ( Identifier "c" ) ) , Const 0 ) , Operator ( Leq, Operator ( Divide, Operator ( Minus, Identifier "b" , Identifier "a" ) , Const 2 ) , Identifier "tol" ) ) ) { 
-                    Deref ( Identifier "c" ) 
+                    Return ( Deref ( Identifier "c" ) ) 
                 } Else { 
                     empty 
                 } ; 

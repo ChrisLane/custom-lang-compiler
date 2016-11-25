@@ -31,6 +31,7 @@ type expression =
   | Identifier of       string                                  (* x *)
   | Let of              string * expression * expression        (* let x = e in e *)
   | New of              string * expression * expression        (* new x = e in e *)
+  | Return of           expression                              (* return e *)
 
 (* Function *)
 type fundef = Fundef of string * string list * expression

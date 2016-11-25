@@ -109,6 +109,7 @@ let rec eval_exp e env = match e with
       failwith "No such function."
 
   | Readint                 -> DInt (read_int())
+  | Return e                -> eval_exp e env
   | Let (x, e1, e2)         -> let v1 = eval_exp e1 env in eval_exp e2 ((x, v1)::env)
   | New (x, e1, e2)         ->
     let v1 = eval_exp e1 env in

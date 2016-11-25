@@ -2,10 +2,10 @@
 main (  ) { 
     New ( "x" = Const 10 ) In { 
         If ( Operator ( Equal, Const 0 , Const 0 ) ) { 
-            Deref ( Identifier "x" ) 
+            Return ( Deref ( Identifier "x" ) ) 
         } Else { 
             Asg ( Identifier "x" := Operator ( Plus, Identifier "x" , Const 1 ) ) ; 
-            Deref ( Identifier "x" ) 
+            Return ( Deref ( Identifier "x" ) ) 
         } 
     } 
 }

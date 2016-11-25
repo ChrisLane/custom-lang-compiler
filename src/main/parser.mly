@@ -16,15 +16,15 @@
 %token  <string>    MAIN
 
 (* Associativity and Precedence *)
+%right              PRINT
+%right              RETURN
 %right              ASG
 %left               OR
 %left               AND
 %right              EQUALTO NOTEQTO
-%right              PRINT
 %left               LEQ GEQ
 %left               PLUS MINUS
 %left               TIMES DIVIDE
-%right              RETURN
 %right              DEREF
 %right              NOT
 %right              LPAREN
@@ -70,7 +70,7 @@ exp:
   | e = exp;    ASG;            f = exp                                     { Asg (e, f) }
   | IF;         p = params;     e = bracedbody;     ELSE;   f = bracedbody  { If (p, e, f) }
   | WHILE;      p = params;     e = bracedbody                              { While (p, e) }
-  | RETURN;     e = exp                                                     { e }
+  | RETURN;     e = exp                                                     { Return e }
   | DEREF;      e = exp                                                     { Deref e }
   | READINT                                                                 { Readint }
   | PRINT;      e = exp                                                     { Print e }
