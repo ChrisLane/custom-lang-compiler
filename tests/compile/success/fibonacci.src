@@ -1,0 +1,15 @@
+// This test will evaluate to print fibonacci numbers less than 50.
+main () {
+    var x = 50;
+    var a = 0;
+    var b = 1;
+
+    print $a;
+    var temp = 0;
+    while ($b <= ($x-1)) {
+        print $b;
+        temp = $a + $b;
+        a = $b;
+        b = $temp;
+    };
+}
