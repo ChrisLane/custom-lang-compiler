@@ -118,8 +118,6 @@ let codegenx86_break _ =
 
 (* Instruction to jump to a label and create a new label*)
 let codegenx86_jmplbl x y =
-  "\tjmp .L" ^ (string_of_int x) ^ "\n"
-  |> add_string code;
   codegenx86_lbl y
 
 (* Instructions to test and jump if gate zero *)
@@ -245,6 +243,7 @@ let rec codegenx86 symt = function
   | If (x, e1, e2) ->
     let oldexit = !exitp in
     codegenx86 symt x;
+    lblp := !lblp + 1;
     codegenx86_testjz ();
     lblp := !lblp + 1;
     sp := !sp - 1;
@@ -255,7 +254,6 @@ let rec codegenx86 symt = function
     codegenx86 symt e2;
     exitp := oldexit;
     codegenx86_lbl (!lblp - 1);
-    lblp := !lblp + 1
   | While (x, e) ->
     codegenx86_jmplbl (!lblp) (!lblp + 1);
     lblp := !lblp + 1;
