@@ -1,4 +1,4 @@
 // This tests the not operators. It should evaluate to true.
 main() {
-    !false;
+    print !false;
 }

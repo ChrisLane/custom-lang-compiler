@@ -44,7 +44,12 @@ let rec make_seq = function
   | [x] -> x
   | x :: xs -> Seq (x, make_seq xs)
 
-(* Convert a Seq expression to a list *)
+let rec make_list = function
+  | Empty       -> []
+  | Seq (e, f)  -> e::(make_list f)
+  | e           -> [e]
+
+(* Convert a Seq expression to a list of strings*)
 let rec list_args = function
   | Empty                   -> []
   | Identifier e            -> [e]

@@ -11,5 +11,5 @@ main() {
         $a;
     };
 
-    return $a;
+    print $a;
 }

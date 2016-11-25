@@ -12,17 +12,14 @@ print:
 	movl	%eax, %esi
 	leaq	.LC0(%rip), %rdi
 	movl	$0, %eax
-	call	printf@PLT
-	movl	$0, %edi
-	call	exit@PLT
+call	printf@PLT
+  leave
+  ret
 	// Begin injected program
 
 "
 let codegenx86_suffix = "
 	// End injected program
-	popq	%rdi
-	call	print
-	movl	$1, %eax
-	leave
-	ret
+	movl	$0, %edi
+	call	exit@PLT
 "

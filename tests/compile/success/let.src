@@ -2,6 +2,6 @@
 main() {
     let x = 50 {
        var c = x + x;
-       $c;
+       print $c;
     };
 }

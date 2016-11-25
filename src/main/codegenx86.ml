@@ -151,7 +151,27 @@ let codegenx86_endfunc _ =
 (* Instructions to call a function and store it's value *)
 let codegenx86_call n =
   "\tcall\t" ^ n ^ "\n" ^
-  "\tpushq\t %rax\n"
+  "\tpushq\t%rax\n"
+  |> add_string code
+
+(* A function to get an argument register by number *)
+let codegenx86_argreg = function
+  | 0 -> "%rdi"
+  | 1 -> "%rsi"
+  | 2 -> "%rdx"
+  | 3 -> "%rcx"
+  | 4 -> "%r8"
+  | 5 -> "%r9"
+  | n -> ((n - 4) * 8 |> string_of_int) ^ "(%rbp)"
+
+(* Instruction to push an argument *)
+let codegenx86_pusharg n =
+  "\tpushq\t" ^ codegenx86_argreg n ^ "\n"
+  |> add_string code
+
+(* Instruction to pop an argument *)
+let codegenx86_poparg n =
+  "\tpopq\t" ^ codegenx86_argreg n ^ "\n"
   |> add_string code
 
 (* Lookup the address for a value *)
@@ -209,7 +229,7 @@ let rec codegenx86 symt = function
   | Print n ->
     codegenx86 symt n;
     codegenx86_print ();
-    sp := !sp - 1
+    codegenx86_empty ()
   | If (x, e1, e2) ->
     codegenx86 symt x;
     codegenx86_testjz ();
@@ -232,14 +252,36 @@ let rec codegenx86 symt = function
     codegenx86_empty ();
     lblp := !lblp + 1
   | Application (Identifier n, e) ->
-    codegenx86_call n
+    let args = make_list e in
+    List.iteri (fun i x ->
+        codegenx86 symt x;
+        codegenx86_poparg i;
+        sp := !sp - 1
+      ) args;
+    codegenx86 symt e;
+    codegenx86_call n;
+    sp := !sp + 1
   | _ -> failwith "Unimplemented expression."
+
+(* Push arguments onto the stack and generate symt *)
+let rec codegenx86_addargs count = function
+  | []      -> []
+  | x::xs   ->
+    codegenx86_pusharg count;
+    sp := !sp + 1;
+    let addr = !sp in
+    (x, addr) :: (codegenx86_addargs (count + 1) xs)
 
 (* Generate x86 code for a function *)
 let codegenx86_func name args exp =
+  let oldsp = !sp in
+  sp := 0;
   codegenx86_newfunc name;
-  codegenx86 [] exp;
-  codegenx86_endfunc ()
+  let symt = codegenx86_addargs 0 (List.rev args) in
+  codegenx86 symt exp;
+  codegenx86_endfunc ();
+  sp := !sp - 1;
+  sp := oldsp
 
 (* Generate x86 code for the main function *)
 let codegenx86_main exp =
