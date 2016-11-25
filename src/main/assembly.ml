@@ -12,9 +12,9 @@ print:
 	movl	%eax, %esi
 	leaq	.LC0(%rip), %rdi
 	movl	$0, %eax
-call	printf@PLT
-  leave
-  ret
+	call	printf@PLT
+	leave
+	ret
 	// Begin injected program
 
 "
