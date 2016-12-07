@@ -116,15 +116,11 @@ let codegenx86_break _ =
   "\tjmp .L" ^ (string_of_int (!exitp)) ^ "\n"
   |> add_string code
 
-(* Instruction to jump to a label and create a new label*)
-let codegenx86_jmplbl x y =
-  codegenx86_lbl y
-
 (* Instructions to test and jump if gate zero *)
-let codegenx86_testjz _ =
+let codegenx86_testjz x =
   "\tpopq\t%rax\n" ^
   "\ttest\t%rax, %rax\n" ^
-  "\tjz .L" ^ (string_of_int !lblp) ^ "\n"
+  "\tjz .L" ^ (string_of_int x) ^ "\n"
   |> add_string code
 
 (* Instructions to test and jump if gate not zero *)
@@ -132,8 +128,7 @@ let codegenx86_testjnz x =
   "\tpopq\t%rax\n" ^
   "\ttest\t%rax, %rax\n" ^
   "\tjnz .L" ^ (string_of_int x) ^ "\n"
-  |> add_string code;
-  codegenx86_jmplbl (!lblp + 1) (!lblp + 1)
+  |> add_string code
 
 (* Instructions that come before a function definition *)
 let codegenx86_newfunc n =
@@ -187,89 +182,139 @@ let rec lookup x = function
 (* Generate x86 code for expressions *)
 let rec codegenx86 symt = function
   | Empty ->
+    add_string code "// begin empty\n";
     codegenx86_empty ();
+    add_string code "// end empty\n";
     sp := !sp + 1
   | Operator (op, e1, e2) ->
+    add_string code "// begin operator\n";
     codegenx86 symt e1;
     codegenx86 symt e2;
     codegenx86_op op;
+    add_string code "// end operator\n";
     sp := !sp - 1
   | Identifier x ->
+    add_string code "// begin identifier\n";
     let addr = lookup x symt in
     codegenx86_id (addr);
+    add_string code "// end identifier\n";
     sp := !sp + 1
   | Const n ->
     codegenx86_const n;
     sp := !sp + 1
   | Bool n ->
+    add_string code "// begin bool\n";
     codegenx86_bool n;
+    add_string code "// end bool\n";
     sp := !sp + 1
   | Let (x, e1, e2) ->
+    add_string code "// begin let\n";
     codegenx86 symt e1;
     codegenx86 ((x, !sp) :: symt) e2;
     codegenx86_let ();
+    add_string code "// end let\n";
     sp := !sp - 1
   | New (x, e1, e2) ->
+    add_string code "// begin new\n";
     codegenx86 symt e1;
     codegenx86_ptr ();
     sp := !sp + 1;
     codegenx86 ((x, !sp) :: symt) e2;
     codegenx86_new ();
+    add_string code "// end new\n";
     sp := !sp - 1
-  | Seq (e, Empty) -> codegenx86 symt e
+  | Seq (e, Empty) ->
+    add_string code "// begin single seq\n";
+    codegenx86 symt e;
+    add_string code "// end single seq\n"
   | Seq (e1, e2) ->
+    add_string code "// begin seq\n";
     codegenx86 symt e1;
     codegenx86_pop ();
     sp := !sp - 1;
-    codegenx86 symt e2
+    codegenx86 symt e2;
+    add_string code "// end seq\n"
   | Asg (e1, e2) ->
+    add_string code "// begin asg\n";
     codegenx86 symt e1;
     codegenx86 symt e2;
     codegenx86_asg ();
+    add_string code "// end asg\n";
     sp := !sp - 1
   | Deref n ->
+    add_string code "// begin deref\n";
     codegenx86 symt n;
-    codegenx86_deref ()
+    codegenx86_deref ();
+    add_string code "// end deref\n"
   | Print n ->
+    add_string code "// begin print\n";
     codegenx86 symt n;
     codegenx86_print ();
-    codegenx86_empty ()
+    codegenx86_empty ();
+    add_string code "// end print\n"
   | Return n ->
+    add_string code "// begin return\n";
     let _ = codegenx86 symt n in
     codegenx86_endfunc ();
+    add_string code "// end return\n";
     sp := !sp - 1
   | Break ->
-    codegenx86_break ()
+    add_string code "// begin break\n";
+    codegenx86_break ();
+    add_string code "// end break\n"
   | If (x, e1, e2) ->
+    add_string code "// begin if\n";
+    let falselbl = !lblp in
+    lblp := !lblp + 1;
+    let endlbl = !lblp in
+    lblp := !lblp + 1;
     let oldexit = !exitp in
     codegenx86 symt x;
-    lblp := !lblp + 1;
-    codegenx86_testjz ();
-    lblp := !lblp + 1;
+    (* Jump to label 0 *)
+    codegenx86_testjz falselbl;
     sp := !sp - 1;
-    exitp := !lblp;
+    add_string code "// begin if statement true\n";
     codegenx86 symt e1;
-    codegenx86_jmplbl !lblp (!lblp - 1);
+    add_string code "// end if statement true\n";
+    (* Label 0 *)
+    codegenx86_lbl falselbl;
     lblp := !lblp + 1;
+    add_string code "// begin if statement false\n";
     codegenx86 symt e2;
+    add_string code "// end if statement false\n";
     exitp := oldexit;
-    codegenx86_lbl (!lblp - 1);
+    (* Label 1 *)
+    codegenx86_lbl endlbl;
+    add_string code "// end if\n"
   | While (x, e) ->
-    codegenx86_jmplbl (!lblp) (!lblp + 1);
+    add_string code "// begin while\n";
+    let test = !lblp in
     lblp := !lblp + 1;
-    let oldlbl = !lblp in
-    let oldexit = !lblp in
-    exitp := !lblp + 1;
+    let body = !lblp in
+    lblp := !lblp + 1;
+    let finish = !lblp in
+    lblp := !lblp + 1;
+    (* Label 1 *)
+    codegenx86_lbl body;
+    let oldexit = !exitp in
+    exitp := finish;
+    add_string code "// begin while body\n";
     codegenx86 symt e;
+    add_string code "// end while body\n";
     codegenx86_pop ();
     sp := !sp - 1;
-    codegenx86_lbl (oldlbl - 1);
-    codegenx86 symt x;
-    codegenx86_testjnz oldlbl;
-    lblp := !lblp + 1;
     exitp := oldexit;
-    codegenx86_empty ()
+    (* Label 0 *)
+    codegenx86_lbl test;
+    codegenx86 symt x;
+    (* Jump to label 1 *)
+    codegenx86_testjnz body;
+    sp := !sp - 1;
+    (* Label 2 *)
+    codegenx86_lbl finish;
+    add_string code "// end while\n"
   | Application (Identifier n, e) ->
+    add_string code "// begin application\n";
     let args = make_list e in
     List.iteri (fun i x ->
         codegenx86 symt x;
@@ -278,13 +323,17 @@ let rec codegenx86 symt = function
       ) args;
     codegenx86 symt e;
     codegenx86_call n;
+    add_string code "// end application\n";
     sp := !sp + 1
   | _ -> failwith "Unimplemented expression for codegen."
 
 (* Push arguments onto the stack and generate symt *)
 let rec codegenx86_addargs count = function
-  | []      -> []
+  | []      ->
+    add_string code "// end function definition arguments\n";
+    []
   | x::xs   ->
+    add_string code "// begin function definition arguments\n";
     codegenx86_pusharg count;
     sp := !sp + 1;
     let addr = !sp in
@@ -294,11 +343,12 @@ let rec codegenx86_addargs count = function
 let codegenx86_func name args exp =
   let oldsp = !sp in
   sp := 0;
+  add_string code "// begin function definition\n";
   codegenx86_newfunc name;
   let symt = codegenx86_addargs 0 (List.rev args) in
   codegenx86 symt exp;
   codegenx86_endfunc ();
-  sp := !sp - 1;
+  add_string code "// end function definition\n";
   sp := oldsp
 
 (* Generate x86 code for the main function *)
