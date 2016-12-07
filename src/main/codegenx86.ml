@@ -51,7 +51,7 @@ let codegenx86_op op =
 let codegenx86_id addr =
   "\t//offset\t" ^ (string_of_int addr) ^ "\n" ^
   "\tmovq\t" ^ (-16 -8 * addr |> string_of_int) ^ "(%rbp), %rax\n" ^
-  "\tpush\t%rax\n"
+  "\tpushq\t%rax\n"
   |> add_string code
 
 (* Instructions for a let *)
