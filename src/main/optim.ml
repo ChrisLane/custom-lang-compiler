@@ -59,18 +59,39 @@ let rec update x v = function
 let addr_gbl = ref 0
 let newref() = addr_gbl:=!addr_gbl+1; !addr_gbl
 
+let rec findskip env = function
+  | Break | Continue -> true
+  | Empty | Identifier _ | Const _ | Bool _ | Ref _ | Unknown | Readint -> false
+  | Seq (e, f) -> findskip env e || findskip env f
+  | While (e, f) -> findskip env e || findskip env f
+  | If (x, e, f) -> (match optim_exp env x with
+      | Bool true -> findskip env e
+      | Bool false -> findskip env f
+      | _ -> true)
+  | Asg (e, f) -> findskip env e || findskip env f
+  | Deref e -> findskip env e
+  | Operator (_, e, f) -> findskip env e || findskip env f
+  | Application (e, f) -> findskip env e || findskip env f
+  | Print e -> findskip env e
+  | Let (_, e, f) -> findskip env e || findskip env f
+  | New (_, e, f) -> findskip env e || findskip env f
+  | Return e -> findskip env e
+
 (* Optimise an expression *)
-let rec optim_exp env = function
+and optim_exp env = function
   | Identifier e            -> lookup e env
 
   | Deref e                 -> (match optim_exp env e with
       | Ref f -> find store (string_of_int f)
       | f -> f)
 
-  | While (e, f)            -> (match optim_exp env e with
+  | While (e, f)            ->
+    (match optim_exp env e with
       | Bool false  -> Empty
-      | Bool true   -> optim_exp env (Seq (f, While (e, f)))
-      | n           -> While (n, optim_exp env f))
+      | Bool true   -> if (findskip env f = true)
+        then Empty
+        else optim_exp env (Seq (f, While (e, f)))
+      | n           -> While (n, f))
 
   | If (e, f, g)            -> (match optim_exp env e with
       | Bool true     -> optim_exp env f
@@ -83,9 +104,12 @@ let rec optim_exp env = function
       | Readint -> update e Unknown env; Asg(Identifier e, v)
       | _       -> update e v env; Asg (Identifier e, v))
 
-  | Seq (e, Empty)          -> optim_exp env e
+  | Break                   -> Empty
 
+  | Seq (Break, n)          -> Empty
+  | Seq (e, Empty)          -> optim_exp env e
   | Seq (e, f)              ->
+    if (findskip env e) then optim_exp env e else
     let v = optim_exp env e in
     let v2 = optim_exp env f in (match v with
         | Empty -> v2
