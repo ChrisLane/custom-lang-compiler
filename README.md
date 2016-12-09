@@ -56,6 +56,8 @@ All tests can be done by running the `make test` command. The script will output
    * Division `x / y`
    * Less than or equal to `x <= y`
    * Greater than or equal to `x >= y`
+   * Less than `x < y`
+   * Greater than `x > y`
    * Equal to `x == y`
    * Not equal to `x != y`
    * And `a && b`
@@ -69,16 +71,20 @@ All tests can be done by running the `make test` command. The script will output
    * e.g. `a = 11`
  * Return (return, expression to return)
    * e.g. `return x`
- * Application (f applied to x)
+ * Application (f with argument x)
    * e.g. `f(x)`
  * Readint
    * e.g. `readint()`
- * Printint (printint, expression to print)
-   * e.g. `printint(x)`
+ * Break from a loop
+   * e.g. `break`
+ * Continue to next loop iteration
+   * e.g. `continue`
+ * Print (print, expression to print)
+   * e.g. `print x`
  * Let (let, name = expression, in body)
    * e.g. `let x = 10 {}`
- * New (type, name = expression)
-   * e.g. `int x = 10`
+ * New (var, name = expression)
+   * e.g. `var x = 10`
  * Deref
    * e.g. `$variable`
 
@@ -88,20 +94,20 @@ Supported types are listed:
  * Boolean - true or false
  * Identifier - String identifier for storing expressions.
  * Unit - Empty
- 
+
 ## Expression Return Types
  * Body Section - Returns the last type evaluated and any printed output.
  * Function - Returns the body section.
  * Operators
    * +, -, *, / - Returns an integer.
-   * <=, >=, ==, || - Returns a boolean.
+   * <=, >=, <, >, ==, || - Returns a boolean.
    * &&, || - Returns a boolean.
    * ! - Returns a boolean.
  * While - Returns a Unit type.
  * If - Returns the first body section if the condition is true, else it returns the second body section.
  * Assign - Returns the type of the value assigned.
  * Return - Returns the type of the argument expression.
- * Printint - Returns a Unit type.
+ * Print - Returns a Unit type.
  * Deref - Returns an integer.
  * Application - Returns the result of a function.
  * Readint - Returns an integer.
