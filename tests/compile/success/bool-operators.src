@@ -1,9 +1,11 @@
 // This tests the boolean operators. This should evaluate to true.
 main () {
     var a = 1 <= 2;
+    var aa = 1 < 2;
     var b = 2 >= 1;
+    var bb = 2 > 1;
     var c = 1 == 1;
     var d = 1 != 2;
-    var x = $a && $b && $c && $d && ($a || $b);
+    var x = $a && $aa && $b && $bb && $c && $d && ($a || $b);
     print $x;
 }
