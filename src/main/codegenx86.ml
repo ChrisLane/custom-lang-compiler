@@ -115,11 +115,13 @@ let asm_lbl n =
   ".L" ^ (string_of_int n) ^ ":\n"
   |> add_string code
 
-let codegenx86_break _ =
+(* Instruction to break out of a loop *)
+let asm_break _ =
   "\tjmp .L" ^ (string_of_int (!exitp)) ^ "\n"
   |> add_string code
 
-let codegenx86_continue _ =
+(* Instruction to continue to a loop's test label *)
+let asm_continue _ =
   "\tjmp .L" ^ (string_of_int (!testp)) ^ "\n"
   |> add_string code
 
@@ -193,6 +195,7 @@ let rec codegenx86 symt = function
     asm_empty ();
     add_string code "// end empty\n";
     sp := !sp + 1
+
   | Operator (op, e1, e2) ->
     add_string code "// begin operator\n";
     codegenx86 symt e1;
@@ -200,20 +203,22 @@ let rec codegenx86 symt = function
     asm_op op;
     add_string code "// end operator\n";
     sp := !sp - 1
+
   | Identifier x ->
     add_string code "// begin identifier\n";
     let addr = lookup x symt in
     asm_id (addr);
     add_string code "// end identifier\n";
     sp := !sp + 1
+
   | Const n ->
     asm_const n;
     sp := !sp + 1
+
   | Bool n ->
-    add_string code "// begin bool\n";
     asm_bool n;
-    add_string code "// end bool\n";
     sp := !sp + 1
+
   | Let (x, e1, e2) ->
     add_string code "// begin let\n";
     codegenx86 symt e1;
@@ -221,6 +226,7 @@ let rec codegenx86 symt = function
     asm_let ();
     add_string code "// end let\n";
     sp := !sp - 1
+
   | New (x, e1, e2) ->
     add_string code "// begin new\n";
     codegenx86 symt e1;
@@ -230,6 +236,7 @@ let rec codegenx86 symt = function
     asm_new ();
     add_string code "// end new\n";
     sp := !sp - 2
+
   | Seq (e, Empty) ->
     add_string code "// begin single seq\n";
     codegenx86 symt e;
@@ -241,38 +248,45 @@ let rec codegenx86 symt = function
     sp := !sp - 1;
     codegenx86 symt e2;
     add_string code "// end seq\n"
+
   | Asg (e1, e2) ->
     add_string code "// begin asg\n";
     codegenx86 symt e1;
     codegenx86 symt e2;
     asm_asg ();
     asm_empty ();
-    add_string code "// end asg\n";
+    add_string code "// end asg\n"
+
   | Deref n ->
     add_string code "// begin deref\n";
     codegenx86 symt n;
     asm_deref ();
     add_string code "// end deref\n"
+
   | Print n ->
     add_string code "// begin print\n";
     codegenx86 symt n;
     codegenx86_print ();
     asm_empty ();
     add_string code "// end print\n"
+
   | Return n ->
     add_string code "// begin return\n";
     let _ = codegenx86 symt n in
     asm_endfunc ();
     add_string code "// end return\n";
     sp := !sp - 1
+
   | Break ->
     add_string code "// begin break\n";
-    codegenx86_break ();
+    asm_break ();
     add_string code "// end break\n"
+
   | Continue ->
     add_string code "// begin continue\n";
-    codegenx86_continue ();
+    asm_continue ();
     add_string code "// end continue \n"
+
   | If (x, e1, e2) ->
     add_string code "// begin if\n";
     let falselbl = !lblp in
@@ -299,6 +313,7 @@ let rec codegenx86 symt = function
     (* Label 1 *)
     asm_lbl endlbl;
     add_string code "// end if\n"
+
   | While (x, e) ->
     add_string code "// begin while\n";
     let oldsp = !sp in
@@ -330,6 +345,7 @@ let rec codegenx86 symt = function
     (* Label 2 *)
     asm_lbl finish;
     add_string code "// end while\n"
+
   | Application (Identifier n, e) ->
     add_string code "// begin application\n";
     let args = make_list e in
@@ -342,6 +358,7 @@ let rec codegenx86 symt = function
     asm_call n;
     add_string code "// end application\n";
     sp := !sp + 1
+
   | _ -> failwith "Unimplemented expression for codegen."
 
 (* Push arguments onto the stack and generate symt *)
