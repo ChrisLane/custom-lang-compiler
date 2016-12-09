@@ -1,0 +1,33 @@
+data(i) {
+    if ($i > 10) {
+        return 0;
+    } else { if ($i >= 20 && $i < 30) {
+        return 6;
+    } else {
+        return 8;
+    };};
+}
+
+movingAverage(period, ii) {
+    if (period != 0 && ii > period) {
+        var summ = 0;
+        var i = ii;
+        while ($i > ii - period) {
+            let p = data(i) {
+                summ = $summ + p;
+            };
+
+            i = $i - 1;
+        };
+
+        summ = $summ / period;
+
+        return $summ;
+    } else {
+        return 0 - 1;
+    };
+}
+
+main() {
+    print movingAverage(2, 5);
+}
