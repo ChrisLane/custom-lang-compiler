@@ -379,7 +379,7 @@ let codegenx86_func name args exp =
   sp := 0;
   add_string code "// begin function definition\n";
   asm_newfunc name;
-  let symt = codegenx86_addargs 0 (List.rev args) in
+  let symt = codegenx86_addargs 0 args in
   codegenx86 symt exp;
   asm_endfunc ();
   add_string code "// end function definition\n";
