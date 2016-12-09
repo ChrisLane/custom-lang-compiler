@@ -255,6 +255,7 @@ let rec codegenx86 symt = function
     codegenx86 symt e2;
     asm_asg ();
     asm_empty ();
+    sp := !sp + 1;
     add_string code "// end asg\n"
 
   | Deref n ->
