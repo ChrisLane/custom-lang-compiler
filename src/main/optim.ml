@@ -16,6 +16,8 @@ let optim_operator_const e f = function
 let optim_operator_compare e f = function
   | Leq     -> e <= f
   | Geq     -> e >= f
+  | Lt      -> e <  f
+  | Gt      -> e >  f
   | Equal   -> e =  f
   | Noteq   -> e != f
   | _       -> failwith "Operator must be of comparison type."
@@ -29,8 +31,9 @@ let optim_operator_bool e f = function
 (* Optimise an operator *)
 let optim_operator op e f = match e, f with
   | Const x, Const y    -> (match op with
-      | Plus | Minus | Times | Divide   -> Const (optim_operator_const x y op)
-      | Leq  | Geq   | Equal | Noteq    -> Bool (optim_operator_compare x y op)
+      | Plus  | Minus | Times | Divide  -> Const (optim_operator_const x y op)
+      | Leq   | Geq   | Lt    | Gt
+      | Equal | Noteq                   -> Bool (optim_operator_compare x y op)
       | _                               -> Operator (op, e, f))
   | Bool x, Bool y      -> (match op with
       | And | Or                        -> Bool (optim_operator_bool x y op)

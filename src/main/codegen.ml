@@ -10,6 +10,8 @@ let string_of_operator = function
   | Divide  -> "div"
   | Leq     -> "leq"
   | Geq     -> "geq"
+  | Lt      -> "lt"
+  | Gt      -> "gt"
   | Equal   -> "eq"
   | Noteq   -> "neq"
   | And     -> "and"

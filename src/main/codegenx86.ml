@@ -19,6 +19,8 @@ let instruction_of_op = function
   | Divide  -> "\txorq\t%rdx, %rdx\n" ^ "\tidivq\t%rbx\n"
   | Leq     -> "\tcmpq\t%rbx, %rax\n" ^ "\tsetle\t%al\n" ^ "\tmovzbq\t%al, %rax\n"
   | Geq     -> "\tcmpq\t%rbx, %rax\n" ^ "\tsetge\t%al\n" ^ "\tmovzbq\t%al, %rax\n"
+  | Lt      -> "\tcmpq\t%rbx, %rax\n" ^ "\tsetl\t%al\n" ^ "\tmovzbq\t%al, %rax\n"
+  | Gt      -> "\tcmpq\t%rbx, %rax\n" ^ "\tsetg\t%al\n" ^ "\tmovzbq\t%al, %rax\n"
   | Equal   -> "\tcmpq\t%rbx, %rax\n" ^ "\tsete\t%al\n" ^ "\tmovzbq\t%al, %rax\n"
   | Noteq   -> "\tcmpq\t%rbx, %rax\n" ^ "\tsetne\t%al\n" ^ "\tmovzbq\t%al, %rax\n"
   | And     -> "\tandq\t%rbx, %rax\n"

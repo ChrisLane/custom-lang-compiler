@@ -5,7 +5,7 @@
 %token  <string>    NAME
 (* Operators *)
 %token              PLUS MINUS TIMES DIVIDE
-%token              LEQ GEQ EQUALTO NOTEQTO
+%token              LEQ GEQ LT GT EQUALTO NOTEQTO
 %token              AND OR NOT
 (* Expressions *)
 %token              TYPE LET WHILE IF ASG ELSE READINT PRINT DEREF RETURN BREAK CONTINUE
@@ -22,7 +22,7 @@
 %left               OR
 %left               AND
 %right              EQUALTO NOTEQTO
-%left               LEQ GEQ
+%left               LEQ GEQ LT GT
 %left               PLUS MINUS
 %left               TIMES DIVIDE
 %right              DEREF
@@ -98,6 +98,8 @@ paramlist:
   | DIVIDE  { Divide }
   | LEQ     { Leq }
   | GEQ     { Geq }
+  | LT      { Lt }
+  | GT      { Gt }
   | EQUALTO { Equal }
   | NOTEQTO { Noteq }
   | AND     { And }

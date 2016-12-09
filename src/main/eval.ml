@@ -18,6 +18,8 @@ let eval_operator_int op e f = match op with
 let eval_operator_compare op e f = match op with
   | Leq     -> e <= f
   | Geq     -> e >= f
+  | Lt      -> e <  f
+  | Gt      -> e >  f
   | Equal   -> e =  f
   | Noteq   -> e != f
   | _       -> failwith "Operator must be of comparison type."
@@ -31,8 +33,9 @@ let eval_operator_bool op e f = match op with
 (* Choose correct operator evaluation depending on types *)
 let eval_operator op e f = match e, f with
   | DInt e, DInt f -> (match op with
-      | Plus | Minus | Times | Divide   -> DInt (eval_operator_int op e f)
-      | Leq  | Geq   | Equal | Noteq    -> DBool (eval_operator_compare op e f)
+      | Plus  | Minus | Times | Divide  -> DInt (eval_operator_int op e f)
+      | Leq   | Geq   | Lt    | Gt
+      | Equal | Noteq                   -> DBool (eval_operator_compare op e f)
       | _                               -> failwith "Operator cannot be applied to integers.")
 
   | DBool e, DBool f -> (match op with

@@ -16,6 +16,8 @@ let opcode_string = function
   | Divide  -> "Divide"
   | Leq     -> "Leq"
   | Geq     -> "Geq"
+  | Lt      -> "Lt"
+  | Gt      -> "Gt"
   | Equal   -> "Equal"
   | Noteq   -> "Noteq"
   | And     -> "And"

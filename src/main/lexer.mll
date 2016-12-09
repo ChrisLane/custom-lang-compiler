@@ -28,6 +28,8 @@ rule read = parse
 
   | "<="            { LEQ }
   | ">="            { GEQ }
+  | '<'             { LT }
+  | '>'             { GT }
   | "=="            { EQUALTO }
   | "!="            { NOTEQTO }
   | "&&"            { AND }
