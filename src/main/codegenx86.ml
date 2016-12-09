@@ -120,6 +120,11 @@ let asm_break _ =
   "\tjmp .L" ^ (string_of_int (!exitp)) ^ "\n"
   |> add_string code
 
+(* Instruction to jump *)
+let asm_jmp x =
+  "\tjmp .L" ^ (string_of_int x) ^ "\n"
+  |> add_string code
+
 (* Instruction to continue to a loop's test label *)
 let asm_continue _ =
   "\tjmp .L" ^ (string_of_int (!testp)) ^ "\n"
@@ -255,6 +260,7 @@ let rec codegenx86 symt = function
     codegenx86 symt e2;
     asm_asg ();
     asm_empty ();
+    sp := !sp + 1;
     add_string code "// end asg\n"
 
   | Deref n ->
@@ -301,6 +307,7 @@ let rec codegenx86 symt = function
     sp := !sp - 1;
     add_string code "// begin if statement true\n";
     codegenx86 symt e1;
+    asm_jmp endlbl;
     add_string code "// end if statement true\n";
     (* Label 0 *)
     asm_lbl falselbl;
