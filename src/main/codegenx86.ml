@@ -227,7 +227,7 @@ let rec codegenx86 symt = function
     codegenx86 ((x, !sp) :: symt) e2;
     codegenx86_new ();
     add_string code "// end new\n";
-    sp := !sp - 1
+    sp := !sp - 2
   | Seq (e, Empty) ->
     add_string code "// begin single seq\n";
     codegenx86 symt e;
@@ -244,8 +244,8 @@ let rec codegenx86 symt = function
     codegenx86 symt e1;
     codegenx86 symt e2;
     codegenx86_asg ();
+    codegenx86_empty ();
     add_string code "// end asg\n";
-    sp := !sp - 1
   | Deref n ->
     add_string code "// begin deref\n";
     codegenx86 symt n;
@@ -299,6 +299,7 @@ let rec codegenx86 symt = function
     add_string code "// end if\n"
   | While (x, e) ->
     add_string code "// begin while\n";
+    let oldsp = !sp in
     let test = !lblp in
     lblp := !lblp + 1;
     let body = !lblp in
@@ -315,7 +316,7 @@ let rec codegenx86 symt = function
     codegenx86 symt e;
     add_string code "// end while body\n";
     codegenx86_pop ();
-    sp := !sp - 1;
+    sp := oldsp;
     exitp := oldexit;
     testp := oldtest;
     (* Label 0 *)
