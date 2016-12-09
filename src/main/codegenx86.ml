@@ -2,10 +2,11 @@ open Ast
 open Buffer
 open Template
 
-let code = create 25
+let code = create 50
 let sp = ref 0
 let lblp = ref 0
 let exitp = ref 0
+let testp = ref 0
 
 (* Generate a string for the int value of a bool *)
 let string_int_of_bool n = if n then string_of_int 1 else string_of_int 0
@@ -114,6 +115,10 @@ let codegenx86_lbl n =
 
 let codegenx86_break _ =
   "\tjmp .L" ^ (string_of_int (!exitp)) ^ "\n"
+  |> add_string code
+
+let codegenx86_continue _ =
+  "\tjmp .L" ^ (string_of_int (!testp)) ^ "\n"
   |> add_string code
 
 (* Instructions to test and jump if gate zero *)
@@ -262,6 +267,10 @@ let rec codegenx86 symt = function
     add_string code "// begin break\n";
     codegenx86_break ();
     add_string code "// end break\n"
+  | Continue ->
+    add_string code "// begin continue\n";
+    codegenx86_continue ();
+    add_string code "// end continue \n"
   | If (x, e1, e2) ->
     add_string code "// begin if\n";
     let falselbl = !lblp in
@@ -269,6 +278,7 @@ let rec codegenx86 symt = function
     let endlbl = !lblp in
     lblp := !lblp + 1;
     let oldexit = !exitp in
+    let oldtest = !testp in
     codegenx86 symt x;
     (* Jump to label 0 *)
     codegenx86_testjz falselbl;
@@ -283,6 +293,7 @@ let rec codegenx86 symt = function
     codegenx86 symt e2;
     add_string code "// end if statement false\n";
     exitp := oldexit;
+    testp := oldtest;
     (* Label 1 *)
     codegenx86_lbl endlbl;
     add_string code "// end if\n"
@@ -297,13 +308,16 @@ let rec codegenx86 symt = function
     (* Label 1 *)
     codegenx86_lbl body;
     let oldexit = !exitp in
+    let oldtest = !testp in
     exitp := finish;
+    testp := test;
     add_string code "// begin while body\n";
     codegenx86 symt e;
     add_string code "// end while body\n";
     codegenx86_pop ();
     sp := !sp - 1;
     exitp := oldexit;
+    testp := oldtest;
     (* Label 0 *)
     codegenx86_lbl test;
     codegenx86 symt x;
