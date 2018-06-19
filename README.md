@@ -1,6 +1,6 @@
 # Compiler Construction Development
 
-master: [![Build Status](https://travis-ci.org/ChrisLane/Compiler-Construction.svg?branch=master)](https://travis-ci.org/ChrisLane/Compiler-Construction) dev: [![Build Status](https://travis-ci.org/ChrisLane/Compiler-Construction.svg?branch=dev)](https://travis-ci.org/ChrisLane/Compiler-Construction)
+master: [![Build Status](https://travis-ci.org/ChrisLane/custom-lang-compiler.svg?branch=master)](https://travis-ci.org/ChrisLane/custom-lang-compiler) dev: [![Build Status](https://travis-ci.org/ChrisLane/custom-lang-compiler.svg?branch=dev)](https://travis-ci.org/ChrisLane/custom-lang-compiler)
 
 Implementing a compiler.
 
